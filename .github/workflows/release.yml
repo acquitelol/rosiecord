@@ -24,12 +24,21 @@ jobs:
       - name: Get Enmity version
         id: enmity_version
         run: echo ${{ steps.enmity_release.outputs.response }} | grep -P '(?<=release-v)[0-9]+\.[0-9]+\.[0-9]+' -o | echo "::set-output name=value::$(head -1)"
-      - name: Get enmityci version (mock)
+      - uses: actions/checkout@v3
+      - name: Get EnmityCI release
+        uses: indiesdev/curl@v1.1
+        id: enmityci_release
+        with:
+          url: https://api.github.com/repos/devicarus/enmity-custom-icons/releases/latest
+          accept: 200,201,204
+          headers: '{ "Accept": "application/vnd.github+json" }'
+          bearer-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get EnmityCI version
         id: enmityci_version
-        run: echo "::set-output name=value::2.0.0"
+        run: echo ${{ steps.enmityci_release.outputs.response }} | grep -P '(?<=release-v)[0-9]+\.[0-9]+\.[0-9]+' -o | echo "::set-output name=value::$(head -1)"
       - name: Compare versions
         id: compare
-        run: echo "::set-output name=result::$(sh semver2.sh ${{steps.enmity_version.outputs.value }} ${{ steps.enmityci_version.outputs.value }})"
+        run: echo "::set-output name=result::$(sh semver2.sh ${{ steps.enmity_version.outputs.value }} ${{ steps.enmityci_version.outputs.value }})"
       - name: Get Enmity download URL
         if: steps.compare.outputs.result==1
         id: download
@@ -46,5 +55,6 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
+          automatic_release_tag: release-v${{ steps.enmity_version.outputs.value }}
           files: |
             dist/*.ipa
