@@ -25,6 +25,7 @@ jobs:
         id: enmity_version
         run: echo ${{ steps.enmity_release.outputs.response }} | grep -P '(?<=v)[0-9]+\.[0-9]+\.[0-9]+' -o | echo "::set-output name=value::$(head -1)"
       - name: Get EnmityCI release
+        if: github.event_name=='schedule'
         uses: indiesdev/curl@v1.1
         id: enmityci_release
         with:
@@ -33,24 +34,26 @@ jobs:
           headers: '{ "Accept": "application/vnd.github+json" }'
           bearer-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Get EnmityCI version
+        if: github.event_name=='schedule'
         id: enmityci_version
         run: echo ${{ steps.enmityci_release.outputs.response }} | grep -P '(?<=v)[0-9]+\.[0-9]+\.[0-9]+' -o | echo "::set-output name=value::$(head -1)"
       - name: Compare versions
+        if: github.event_name=='schedule'
         id: compare
         run: echo "::set-output name=result::$(sh semver2.sh ${{ steps.enmity_version.outputs.value }} ${{ steps.enmityci_version.outputs.value }})"
       - name: Get Enmity download URL
-        if: steps.compare.outputs.result==1
+        if: steps.compare.outputs.result==1 || github.event_name=='push'
         id: download
         run: echo ${{ steps.enmity_release.outputs.response }} | grep -P 'https://[^:]+Enmity\.ipa' -o | echo "::set-output name=url::$(head -1)"
       - name: Download Enmity IPA
-        if: steps.compare.outputs.result==1
+        if: steps.compare.outputs.result==1 || github.event_name=='push'
         run: wget ${{ steps.download.outputs.url }}
       - name: Patch Enmity IPA
-        if: steps.compare.outputs.result==1
+        if: steps.compare.outputs.result==1 || github.event_name=='push'
         run: sh patch.sh
       - name: Release patched IPAs
         uses: "marvinpinto/action-automatic-releases@latest"
-        if: steps.compare.outputs.result==1
+        if: steps.compare.outputs.result==1 || github.event_name=='push'
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
