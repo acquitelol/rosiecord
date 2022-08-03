@@ -24,7 +24,6 @@ jobs:
       - name: Get Enmity version
         id: enmity_version
         run: echo ${{ steps.enmity_release.outputs.response }} | grep -P '(?<=v)[0-9]+\.[0-9]+\.[0-9]+' -o | echo "::set-output name=value::$(head -1)"
-      - uses: actions/checkout@v3
       - name: Get EnmityCI release
         uses: indiesdev/curl@v1.1
         id: enmityci_release
