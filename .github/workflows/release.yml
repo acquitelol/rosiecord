@@ -23,7 +23,7 @@ jobs:
           bearer-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Get Enmity version
         id: enmity_version
-        run: echo ${{ steps.enmity_release.outputs.response }} | grep -P '(?<=release-v)[0-9]+\.[0-9]+\.[0-9]+' -o | echo "::set-output name=value::$(head -1)"
+        run: echo ${{ steps.enmity_release.outputs.response }} | grep -P '(?<=v)[0-9]+\.[0-9]+\.[0-9]+' -o | echo "::set-output name=value::$(head -1)"
       - uses: actions/checkout@v3
       - name: Get EnmityCI release
         uses: indiesdev/curl@v1.1
@@ -35,7 +35,7 @@ jobs:
           bearer-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Get EnmityCI version
         id: enmityci_version
-        run: echo ${{ steps.enmityci_release.outputs.response }} | grep -P '(?<=release-v)[0-9]+\.[0-9]+\.[0-9]+' -o | echo "::set-output name=value::$(head -1)"
+        run: echo ${{ steps.enmityci_release.outputs.response }} | grep -P '(?<=v)[0-9]+\.[0-9]+\.[0-9]+' -o | echo "::set-output name=value::$(head -1)"
       - name: Compare versions
         id: compare
         run: echo "::set-output name=result::$(sh semver2.sh ${{ steps.enmity_version.outputs.value }} ${{ steps.enmityci_version.outputs.value }})"
@@ -55,6 +55,6 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          automatic_release_tag: release-v${{ steps.enmity_version.outputs.value }}
+          automatic_release_tag: v${{ steps.enmity_version.outputs.value }}
           files: |
             dist/*.ipa
