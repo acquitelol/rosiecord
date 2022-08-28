@@ -44,7 +44,7 @@ jobs:
       - name: Get Enmity download URL
         if: steps.compare.outputs.result==1 || github.event_name=='push'
         id: download
-        run: echo ${{ steps.enmity_release.outputs.response }} | grep -P 'https://[^:]+Enmity\.ipa' -o | echo "::set-output name=url::$(head -1)"
+        run: echo ${{ steps.enmity_release.outputs.response }} | grep -P 'https://[^:]+enmity\.ipa' -o | echo "::set-output name=url::$(head -1)"
       - name: Download Enmity IPA
         if: steps.compare.outputs.result==1 || github.event_name=='push'
         run: wget ${{ steps.download.outputs.url }}
