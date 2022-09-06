@@ -5,6 +5,7 @@ on:
   push:
   schedule:
     - cron: '0 0 * * *'  # every day at midnight
+  workflow_dispatch:
 
 jobs:
   release:
