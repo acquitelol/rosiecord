@@ -2,7 +2,8 @@
 # enmity patch remake by rosie <3333
 
 # global variables used >>>
-IPA_DIR=ipas/Discord.ipa
+IPA_NAME=Discord_151
+IPA_DIR=ipas/$IPA_NAME.ipa
 
 ### enmity patching :)
 ## output directory of patched ipa
@@ -16,7 +17,7 @@ rm -rf dist/*
 Azule/azule -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb &
 wait $!
 
-mv dist/Discord+enmity.dev.deb.ipa dist/Enmity.ipa
+mv dist/$IPA_NAME+enmity.dev.deb.ipa dist/Enmity.ipa
 
 # remove payload incase it exists
 rm -rf Payload
