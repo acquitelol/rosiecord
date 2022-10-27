@@ -11,7 +11,7 @@ jobs:
 
       - name: Retrieve version
         run: |
-          echo $(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)
+          echo $(::set-output name=ENMITY_VERSION::$(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g))
         id: version
       - name: Run Main Shell Script
         id: shell_script
@@ -21,6 +21,6 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          automatic_release_tag: rosiecord_v${{ steps.version.outputs.value }}
-          title: Rosiecord v${{ steps.version.outputs.value }}
+          automatic_release_tag: rosiecord_v${{ steps.version.outputs.ENMITY_VERSION }}
+          title: Rosiecord v${{ steps.version.outputs.ENMITY_VERSION }}
           files: dist/*.ipa
