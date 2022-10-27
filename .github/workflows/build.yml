@@ -21,4 +21,4 @@ jobs:
         with:
           tag_name: Rosiecord v${{ steps.version.outputs.TAG_NAME }}
           files:  |
-            out/*
+            dist/*
