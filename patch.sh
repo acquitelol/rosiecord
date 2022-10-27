@@ -24,7 +24,7 @@ unzip dist/Enmity.ipa &
 wait $!
 
 # set the main path to the payload plist in a variable for ease of use
-MAIN_PLIST=Payload/Discord.app//Info.plist
+MAIN_PLIST=Payload/Discord.app/Info.plist
 
 # patch discord's name
 plutil -replace CFBundleName -string "Enmity" $MAIN_PLIST
