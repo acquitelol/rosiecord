@@ -9,17 +9,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Retrieve version
-      #   run: |
-      #     echo "::set-output name=TAG_NAME::$(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)"
-      #   id: version
+      - name: Retrieve version
+        run: |
+          echo "::set-output name=TAG_NAME::$(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)"
+        id: version
+      - name: Run Main Shell Script
+        id: shell_script
+        run: sh ./patch.sh
       - name: Log Files
         run: |
           ls
         id: log
-      # - name: Run Main Shell Script
-      #   id: shell_script
-      #   run: sh ./patch.sh
       # - name: Create release
       #   uses: softprops/action-gh-release@v1
       #   with:
