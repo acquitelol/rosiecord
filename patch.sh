@@ -11,7 +11,10 @@ mkdir -p dist/
 rm -rf dist/*
 
 # patch the ipa with the dylib tweak (using azule)
-[[ -d "Azule" ]] && Azule/azule -n Enmity -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb || git clone https://github.com/Al4ise/Azule &
+[[ -d "Azule" ]] && echo "Azule already exists" || git clone https://github.com/Al4ise/Azule &
+wait $!
+
+Azule/azule -n Enmity -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb &
 wait $!
 
 # remove payload incase it exists
