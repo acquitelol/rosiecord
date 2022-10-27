@@ -1,5 +1,8 @@
 name: Build Enmity and Inject Rosiecord
 on:
+  push:
+    paths:
+      'ipas/**'
   workflow_dispatch:
 
 jobs:
