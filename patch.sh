@@ -10,11 +10,11 @@ IPA_DIR=ipas/$IPA_NAME.ipa
 mkdir -p dist/
 rm -rf dist/*
 
-# # patch the ipa with the dylib tweak (using azule)
-# [[ -d "Azule" ]] && echo "[*] Azule already exists" || git clone https://github.com/Al4ise/Azule &
-# wait $!
+# patch the ipa with the dylib tweak (using azule)
+[[ -d "Azule" ]] && echo "[*] Azule already exists" || git clone https://github.com/Al4ise/Azule &
+wait $!
 
-echo $IPA_DIR
+echo Directory of IPA: $IPA_DIR
 Azule/azule -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb &
 wait $!
 
