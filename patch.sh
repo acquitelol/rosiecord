@@ -2,19 +2,21 @@
 # enmity patch remake by rosie <3333
 
 # global variables used >>>
-IPA_DIR=ipas/Discord_151.ipa
+IPA_DIR=ipas/Discord.ipa
 
 ### enmity patching :)
 ## output directory of patched ipa
 mkdir -p dist/
 rm -rf dist/*
 
-# patch the ipa with the dylib tweak (using azule)
-[[ -d "Azule" ]] && echo "Azule already exists" || git clone https://github.com/Al4ise/Azule &
+# # patch the ipa with the dylib tweak (using azule)
+# [[ -d "Azule" ]] && echo "[*] Azule already exists" || git clone https://github.com/Al4ise/Azule &
+# wait $!
+
+Azule/azule -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb &
 wait $!
 
-Azule/azule -n Enmity -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb &
-wait $!
+mv dist/Discord+enmity.dev.deb.ipa dist/Enmity.ipa
 
 # remove payload incase it exists
 rm -rf Payload
