@@ -11,7 +11,7 @@ jobs:
 
       - name: Retrieve version
         run: |
-          echo "::set-output name=TAG_NAME::$(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)"
+          echo $(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)
         id: version
       - name: Run Main Shell Script
         id: shell_script
@@ -19,6 +19,5 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          prerelease: false
-          tag_name: Rosiecord v${{ steps.version.outputs.TAG_NAME }}
+          tag_name: "Rosiecord v ${{ steps.version.outputs.value }}"
           files: dist/*
