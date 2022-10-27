@@ -17,7 +17,7 @@ jobs:
         id: shell_script
         run: sh ./patch.sh
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          tag_name: "Rosiecord v ${{ steps.version.outputs.value }}"
+          tag_name: Rosiecord v${{ steps.version.outputs.value }}
           files: dist/*
