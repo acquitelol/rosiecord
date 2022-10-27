@@ -19,5 +19,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: Rosiecord v${{ steps.version.outputs.TAG_NAME }}
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          automatic_release_tag: Rosiecord v${{ steps.version.outputs.TAG_NAME }}
           files: out/*
