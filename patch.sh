@@ -2,8 +2,7 @@
 # enmity patch remake by rosie <3333
 
 # global variables used >>>
-IPA_DIR=Discord.ipa
-ICONS_DIR=Icons/*
+IPA_DIR=Discord_151.0.ipa
 
 ### enmity patching :)
 ## output directory of patched ipa
@@ -25,8 +24,7 @@ unzip dist/Enmity.ipa &
 wait $!
 
 # set the main path to the payload plist in a variable for ease of use
-MAIN_PAYLOAD=Payload/Discord.app
-MAIN_PLIST=$MAIN_PAYLOAD/Info.plist
+MAIN_PLIST=Payload/Discord.app//Info.plist
 
 # patch discord's name
 plutil -replace CFBundleName -string "Enmity" $MAIN_PLIST
@@ -39,7 +37,7 @@ plutil -insert CFBundleURLTypes.1 -xml "<dict><key>CFBundleURLName</key><string>
 plutil -remove UISupportedDevices $MAIN_PLIST
 
 # patch the icons
-cp -rf $ICONS_DIR Payload/Discord.app/ 
+cp -rf Icons/* Payload/Discord.app/ 
 plutil -replace CFBundleIcons -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" $MAIN_PLIST
 plutil -replace CFBundleIcons~ipad -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string><string>EnmityIcon76x76</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" $MAIN_PLIST
 
@@ -50,8 +48,8 @@ plutil -replace UIFileSharingEnabled -bool true $MAIN_PLIST
 ## plumpycord and rosiecord patching AYAYA ##
 
 # copy the images and fonts over
-cp -rf Packs/Plumpy/* $MAIN_PAYLOAD/assets
-cp -rf Fonts/* $MAIN_PAYLOAD/
+cp -rf Packs/Plumpy/* Payload/Discord.app/assets/
+cp -rf Fonts/* Payload/Discord.app/
 
 # pack the ipa into rosiecord and remove the payload and ipa
 zip -r dist/Rosiecord.ipa Payload

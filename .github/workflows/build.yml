@@ -1,0 +1,24 @@
+name: Build Enmity and Inject Rosiecord
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Enmity and Inject Rosiecord
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Retrieve version
+        run: |
+          echo "::set-output name=TAG_NAME::$(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)"
+        id: version
+      - name: Run Main Shell Script
+        id: shell script
+        run: sh ./patch.sh
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: Rosiecord v${{ steps.version.outputs.TAG_NAME }}
+          files:  |
+            out/*
