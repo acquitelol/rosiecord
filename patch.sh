@@ -14,6 +14,7 @@ rm -rf dist/*
 # [[ -d "Azule" ]] && echo "[*] Azule already exists" || git clone https://github.com/Al4ise/Azule &
 # wait $!
 
+echo $IPA_DIR
 Azule/azule -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb &
 wait $!
 
