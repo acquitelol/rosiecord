@@ -6,21 +6,21 @@ IPA_DIR=Discord_151.0.ipa
 
 ### enmity patching :)
 ## output directory of patched ipa
-mkdir -p dist/
-rm -rf dist/*
+mkdir -p out/
+rm -rf out/*
 
 # patch the ipa with the dylib tweak (using azule)
 [[ -d "Azule" ]] && echo "Azule already exists" || git clone https://github.com/Al4ise/Azule &
 wait $!
 
-Azule/azule -n Enmity -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb &
+Azule/azule -n Enmity -i $IPA_DIR -o out -f EnmityPatches/enmity.dev.deb &
 wait $!
 
 # remove payload incase it exists
 rm -rf Payload
 
 ## unzip the ipa and wait for it to finish unzipping
-unzip dist/Enmity.ipa &
+unzip out/Enmity.ipa &
 wait $!
 
 # set the main path to the payload plist in a variable for ease of use
@@ -52,7 +52,7 @@ cp -rf Packs/Plumpy/* Payload/Discord.app/assets/
 cp -rf Fonts/* Payload/Discord.app/
 
 # pack the ipa into rosiecord and remove the payload and ipa
-zip -r dist/Rosiecord.ipa Payload
-rm -rf dist/Enmity.ipa
+zip -r out/Rosiecord.ipa Payload
+rm -rf out/Enmity.ipa
 rm -rf Payload
 
