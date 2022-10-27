@@ -2,7 +2,7 @@
 # enmity patch remake by rosie <3333
 
 # global variables used >>>
-IPA_DIR=Discord_151.0.ipa
+IPA_DIR=Discord_151.ipa
 
 ### enmity patching :)
 ## output directory of patched ipa
