@@ -2,7 +2,7 @@
 # enmity patch remake by rosie <3333
 
 # global variables used >>>
-IPA_NAME=Discord_151
+IPA_NAME=Discord_152
 IPA_DIR=ipas/$IPA_NAME.ipa
 
 ### enmity patching :)
@@ -14,7 +14,7 @@ rm -rf dist/*
 [[ -d "Azule" ]] && echo "[*] Azule already exists" || git clone https://github.com/Al4ise/Azule &
 wait $!
 
-echo Directory of IPA: $IPA_DIR
+echo "[*] Directory of IPA: $IPA_DIR"
 Azule/azule -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb &
 wait $!
 
