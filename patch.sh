@@ -3,28 +3,22 @@
 
 # global variables used >>>
 IPA_NAME=Discord_152
-IPA_DIR=ipas/$IPA_NAME.ipa
+IPA_DIR=Ipas/$IPA_NAME.ipa
 
 ### enmity patching :)
 ## output directory of patched ipa
-mkdir -p dist/
-rm -rf dist/*
+mkdir -p Dist/
+rm -rf Dist/*
 
-# patch the ipa with the dylib tweak (using azule)
-[[ -d "Azule" ]] && echo "[*] Azule already exists" || git clone https://github.com/Al4ise/Azule &
-wait $!
-
-echo "[*] Directory of IPA: $IPA_DIR"
-Azule/azule -i $IPA_DIR -o dist -f EnmityPatches/enmity.dev.deb &
-wait $!
-
-mv dist/$IPA_NAME+enmity.dev.deb.ipa dist/Enmity.ipa
 
 # remove payload incase it exists
 rm -rf Payload
 
+echo "[*] Directory of IPA: $IPA_DIR"
+
+
 ## unzip the ipa and wait for it to finish unzipping
-unzip dist/Enmity.ipa &
+unzip $IPA_DIR &
 wait $!
 
 # set the main path to the payload plist in a variable for ease of use
@@ -60,3 +54,30 @@ zip -r dist/Rosiecord.ipa Payload
 rm -rf dist/Enmity.ipa
 rm -rf Payload
 
+# make the flowercord package
+
+# remove dir contents incase it exists
+mkdir -p Flowercord_Patcher/packages/
+rm -rf FLowercord_Patcher/packages/*
+
+# package the deb
+cd ./Flowercord_Patcher
+/usr/bin/make package
+
+# move it into Enmity_Patches
+FILENAME=$(ls packages)
+mv packages/$FILENAME ../Enmity_Patches/flowercord.deb
+
+# go back to main dir
+cd ..
+
+# patch the ipa with the dylib tweak (using azule)
+[[ -d "Azule" ]] && echo "[*] Azule already exists" || git clone https://github.com/Al4ise/Azule &
+wait $!
+
+for Patch in $(ls Enmity_Patches) 
+do
+    Azule/azule -i dist/Rosiecord.ipa -o Dist -f Enmity_Patches/${Patch} &
+    wait $!
+    mv Dist/Rosiecord+${Patch}.ipa Dist/Rosiecord.ipa
+done

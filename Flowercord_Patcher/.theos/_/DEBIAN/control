@@ -1,0 +1,10 @@
+Package: flowercord
+Name: FlowerCord
+Architecture: iphoneos-arm
+Description: Discord addon
+Maintainer: ren7995
+Author: ren7995
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
+Version: 1.0.0
+Installed-Size: 188
