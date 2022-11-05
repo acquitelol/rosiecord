@@ -10,14 +10,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Prepare Theos
+        uses: Randomblock1/theos-action@v1
+
       - name: Retrieve version
         run: |
           cd ./ipas
           echo "::set-output name=DISCORD_VERSION::$(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)"   
         id: version
+
       - name: Run Main Shell Script
         id: shell_script
         run: sh ./patch.sh
+        
       - name: Create release
         uses: marvinpinto/action-automatic-releases@latest
         with:
