@@ -8,10 +8,6 @@
 @interface DCDAvatarView : UIView
 @end
 
-@interface DCDChat : UIView
-@property (nonatomic, strong) UIImageView *customBackground;
-- (void)_updateDynamicBackgroundImage;
-@end
 
 @interface DCDMessageTableViewCell : UIView
 @property (nonatomic, strong) UIView *customBackgroundView;

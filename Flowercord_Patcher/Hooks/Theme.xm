@@ -9,8 +9,6 @@
 
 #import "Discord.h"
 
-static UIImage *lightImage;
-static UIImage *darkImage;
 static UIColor *messageCellLightColor;
 static UIColor *messageCellDarkColor;
 static UIColor *messageCellDynamicColor;
@@ -21,36 +19,6 @@ static BOOL isDiscordDarkMode() {
     CGFloat red = 0;
     [[objc_getClass("DCDThemeColor") BACKGROUND_PRIMARY] getRed:&red green:nil blue:nil alpha:nil];
     return red < 0.25;
-}
-
-static void loadBackgroundImages() {
-    // Trolled
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *documentsDir = [[[[fm URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject] path] stringByAppendingString:@"/catcord/"];
-
-    if(![fm fileExistsAtPath:documentsDir]) {
-        [fm createDirectoryAtPath:documentsDir withIntermediateDirectories:NO attributes:nil error:nil];
-    }
-
-    NSString *lightImageDataPath = [documentsDir stringByAppendingString:@"light.png"];
-    NSString *darkImageDataPath = [documentsDir stringByAppendingString:@"dark.png"];
-    
-    NSData *lightImageData = [NSData dataWithContentsOfFile:lightImageDataPath];
-    NSData *darkImageData = [NSData dataWithContentsOfFile:darkImageDataPath];
-    
-    if(!lightImageData || !darkImageData) {
-        lightImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://cdn.discordapp.com/attachments/951560221401161758/1017578856196096111/unknown.png"]];
-        darkImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://cdn.discordapp.com/attachments/813858241502511104/921212603722780722/IMG_1822.PNG"]];
-        //@"https://cdn.discordapp.com/attachments/813858241502511104/921174988801843220/image0.jpg"
-        //@"https://media.discordapp.net/attachments/1014901536071094312/1017568750070931487/0FE4DC0D-9E77-4EFC-9DD6-8788E449F994.jpg"
-        //@"https://media.discordapp.net/attachments/836793351818706984/979528510785867836/image0.jpg"
-        
-        [lightImageData writeToFile:lightImageDataPath atomically:YES];
-        [darkImageData writeToFile:darkImageDataPath atomically:YES];
-    }
-
-    lightImage = [[UIImage alloc] initWithData:lightImageData];
-    darkImage = [[UIImage alloc] initWithData:darkImageData];
 }
 
 static void loadDynamicColors() {
@@ -79,44 +47,6 @@ static void loadDynamicColors() {
         NSString* myString = [NSString stringWithFormat:@"%ld",(long)view.tag];
         NSLog(@"ACQU_TAG: %@", myString);
     }
-}
-
-%end
-
-// Chat wallpaper/background image view
-%hook DCDChat
-%property (nonatomic, strong) UIImageView *customBackground;
-
-- (void)didMoveToSuperview {
-    %orig();
-
-    if(!self.customBackground) {
-        self.customBackground = [[UIImageView alloc] initWithImage:nil];
-    }
-
-    [self _updateDynamicBackgroundImage];
-
-    [self insertSubview:self.customBackground atIndex:0];
-    self.customBackground.translatesAutoresizingMaskIntoConstraints = NO;
-    [NSLayoutConstraint activateConstraints:@[
-        [self.customBackground.heightAnchor constraintEqualToAnchor:self.heightAnchor],
-        [self.customBackground.widthAnchor constraintEqualToAnchor:self.widthAnchor],
-        [self.customBackground.centerXAnchor constraintEqualToAnchor:self.centerXAnchor],
-        [self.customBackground.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-    ]];
-
-    self.subviews[1].backgroundColor = [UIColor clearColor];
-}
-
-- (void)traitCollectionDidChange:(UITraitCollection *)traitCollection {
-    %orig();
-    [self _updateDynamicBackgroundImage];
-}
-
-%new
-- (void)_updateDynamicBackgroundImage {
-    if(!self.customBackground) return;
-        [self.customBackground setImage:isDiscordDarkMode() ? darkImage : lightImage];
 }
 
 %end
@@ -172,7 +102,6 @@ static void loadDynamicColors() {
 
 // Constructor
 %ctor {
-    loadBackgroundImages();
     loadDynamicColors();
     %init();
 }
