@@ -2,7 +2,7 @@
 # enmity patch remake by rosie <3333
 
 # global variables used >>>
-IPA_NAME=Discord_152
+IPA_NAME=Discord_153
 IPA_DIR=Ipas/$IPA_NAME.ipa
 
 ### enmity patching :)
@@ -57,19 +57,20 @@ rm -rf Payload
 # make the flowercord package
 
 # remove dir contents incase it exists
-mkdir -p Flowercord_Patcher/packages/
-rm -rf FLowercord_Patcher/packages/*
+rm -rf Flowercord_Patcher/packages/*
 
 # package the deb
 cd ./Flowercord_Patcher
 /usr/bin/make package
 
 # move it into Enmity_Patches
-FILENAME=$(ls packages)
-mv packages/$FILENAME ../Enmity_Patches/flowercord.deb
+PACKAGES=$(ls packages)
+PATCH_NAME=flowercord
+mv packages/$PACKAGES ../Enmity_Patches/$PATCH_NAME.deb
 
 # go back to main dir
 cd ..
+[[ -e "Enmity_Patches/$PATCH_NAME.deb" ]] && echo "[*] '$PATCH_NAME.deb' has been built successfully." || echo "[*] Error when building '$PATCH_NAME.deb'. Continuing anyway."
 
 # patch the ipa with the dylib tweak (using azule)
 [[ -d "Azule" ]] && echo "[*] Azule already exists" || git clone https://github.com/Al4ise/Azule &
