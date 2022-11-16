@@ -25,8 +25,8 @@ wait $!
 MAIN_PLIST=Payload/Discord.app/Info.plist
 
 # patch discord's name
-plutil -replace CFBundleName -string "Enmity" $MAIN_PLIST
-plutil -replace CFBundleDisplayName -string "Enmity" $MAIN_PLIST
+plutil -replace CFBundleName -string "Rosiecord" $MAIN_PLIST
+plutil -replace CFBundleDisplayName -string "Rosiecord" $MAIN_PLIST
 
 # patch discord's url scheme to add enmity's url handler
 plutil -insert CFBundleURLTypes.1 -xml "<dict><key>CFBundleURLName</key><string>Enmity</string><key>CFBundleURLSchemes</key><array><string>enmity</string></array></dict>" $MAIN_PLIST
