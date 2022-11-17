@@ -43,15 +43,11 @@ plutil -replace CFBundleIcons~ipad -xml "<dict><key>CFBundlePrimaryIcon</key><di
 plutil -replace UISupportsDocumentBrowser -bool true $MAIN_PLIST
 plutil -replace UIFileSharingEnabled -bool true $MAIN_PLIST
 
-## plumpycord and rosiecord patching AYAYA ##
-
-# copy the images and fonts over
-cp -rf Packs/Plumpy/* Payload/Discord.app/assets/
+# change the font
 cp -rf Fonts/* Payload/Discord.app/
 
 # pack the ipa into rosiecord and remove the payload and ipa
 zip -r dist/Rosiecord.ipa Payload
-rm -rf dist/Enmity.ipa
 rm -rf Payload
 
 # make the flowercord package
@@ -76,9 +72,20 @@ cd ..
 [[ -d "Azule" ]] && echo "[*] Azule already exists" || git clone https://github.com/Al4ise/Azule &
 wait $!
 
+# inject all of the patches into the enmity ipa
 for Patch in $(ls Enmity_Patches) 
 do
     Azule/azule -i dist/Rosiecord.ipa -o Dist -f Enmity_Patches/${Patch} &
     wait $!
     mv Dist/Rosiecord+${Patch}.ipa Dist/Rosiecord.ipa
+done
+
+
+# create a new ipa with each pack injected from the base ipa
+for Pack in $(ls Packs)
+do
+    unzip Dist/Rosiecord.ipa
+    cp -rf Packs/${Pack}/* Payload/Discord.app/assets/
+    zip -r Dist/Rosiecord+${Pack}_Icons.ipa Payload
+    rm -rf Payload
 done
