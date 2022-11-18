@@ -43,11 +43,13 @@ plutil -replace CFBundleIcons~ipad -xml "<dict><key>CFBundlePrimaryIcon</key><di
 plutil -replace UISupportsDocumentBrowser -bool true $MAIN_PLIST
 plutil -replace UIFileSharingEnabled -bool true $MAIN_PLIST
 
+zip -r dist/Rosiecord_No_Font.ipa Payload
+
 # change the font
 cp -rf Fonts/* Payload/Discord.app/
 
 # pack the ipa into rosiecord and remove the payload and ipa
-zip -r dist/Rosiecord.ipa Payload
+zip -r dist/Rosiecord_Base.ipa Payload
 rm -rf Payload
 
 # make the flowercord package
@@ -73,19 +75,33 @@ cd ..
 wait $!
 
 # inject all of the patches into the enmity ipa
-for Patch in $(ls Enmity_Patches) 
+for Patch in $(ls Enmity_Patches/Required) 
 do
-    Azule/azule -i dist/Rosiecord.ipa -o Dist -f Enmity_Patches/${Patch} &
+    Azule/azule -i Dist/Rosiecord_Base.ipa -o Dist -f Enmity_Patches/Required/${Patch} &
     wait $!
-    mv Dist/Rosiecord+${Patch}.ipa Dist/Rosiecord.ipa
-done
+    mv Dist/Rosiecord_Base+${Patch}.ipa Dist/Rosiecord_Base.ipa
 
+    Azule/azule -i Dist/Rosiecord_No_Font.ipa -o Dist -f Enmity_Patches/Required/${Patch} &
+    wait $!
+    mv Dist/Rosiecord_No_Font+${Patch}.ipa Dist/Rosiecord_No_Font.ipa
+done
 
 # create a new ipa with each pack injected from the base ipa
 for Pack in $(ls Packs)
 do
-    unzip Dist/Rosiecord.ipa
+    unzip Dist/Rosiecord_Base.ipa
     cp -rf Packs/${Pack}/* Payload/Discord.app/assets/
-    zip -r Dist/Rosiecord+${Pack}_Icons.ipa Payload
+    zip -r Dist/Rosiecord_Base+${Pack}_Icons.ipa Payload
     rm -rf Payload
+
+    unzip Dist/Rosiecord_No_Font.ipa
+    cp -rf Packs/${Pack}/* Payload/Discord.app/assets/
+    zip -r Dist/Rosiecord_No_Font+${Pack}_Icons.ipa Payload
+    rm -rf Payload
+done
+
+for Ipa in $(ls Dist)
+do
+    Azule/azule -i Dist/$Ipa -o Dist -f Enmity_Patches/Optional/flowercord.deb &
+    wait $!
 done
