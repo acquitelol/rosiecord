@@ -10,9 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Prepare Theos
-        uses: Randomblock1/theos-action@v1
-
       - name: Retrieve version
         run: |
           cd ./ipas
