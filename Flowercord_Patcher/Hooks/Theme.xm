@@ -40,13 +40,6 @@ static void loadDynamicColors() {
 - (void)layoutSubviews {
     %orig();
     self.layer.cornerRadius = profile_radius;
-
-    NSArray *subviews = self.subviews;
-    
-    for(UIView *view in subviews){
-        NSString* myString = [NSString stringWithFormat:@"%ld",(long)view.tag];
-        NSLog(@"ACQU_TAG: %@", myString);
-    }
 }
 
 %end
