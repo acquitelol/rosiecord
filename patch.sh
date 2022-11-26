@@ -2,7 +2,7 @@
 # enmity patch remake by rosie <3333
 
 # global variables used >>>
-IPA_NAME=Discord_154
+IPA_NAME=Discord_155
 IPA_DIR=Ipas/$IPA_NAME.ipa
 
 ### enmity patching :)
@@ -64,7 +64,7 @@ cd ./Flowercord_Patcher
 # move it into Enmity_Patches
 PACKAGES=$(ls packages)
 PATCH_NAME=flowercord
-mv packages/$PACKAGES ../Enmity_Patches/$PATCH_NAME.deb
+mv packages/$PACKAGES ../Enmity_Patches/Optional/$PATCH_NAME.deb
 
 # go back to main dir
 cd ..
