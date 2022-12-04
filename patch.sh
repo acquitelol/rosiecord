@@ -2,7 +2,7 @@
 # enmity patch remake by rosie <3333
 
 # global variables used >>>
-IPA_NAME=Discord_156
+IPA_NAME=Discord_157
 IPA_DIR=Ipas/$IPA_NAME.ipa
 
 ### enmity patching :)
@@ -43,13 +43,13 @@ plutil -replace CFBundleIcons~ipad -xml "<dict><key>CFBundlePrimaryIcon</key><di
 plutil -replace UISupportsDocumentBrowser -bool true $MAIN_PLIST
 plutil -replace UIFileSharingEnabled -bool true $MAIN_PLIST
 
-zip -r dist/Rosiecord_No_Font.ipa Payload
+zip -r dist/Rosiecord_GGSans-Font.ipa Payload
 
 # change the font
-cp -rf Fonts/* Payload/Discord.app/
+cp -rf Fonts/woff2/* Payload/Discord.app/
 
 # pack the ipa into rosiecord and remove the payload and ipa
-zip -r dist/Rosiecord_Base.ipa Payload
+zip -r dist/Rosiecord_Cabin-Font.ipa Payload
 rm -rf Payload
 
 # make the flowercord package
