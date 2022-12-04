@@ -77,26 +77,26 @@ wait $!
 # inject all of the patches into the enmity ipa
 for Patch in $(ls Enmity_Patches/Required) 
 do
-    Azule/azule -i Dist/Rosiecord_Base.ipa -o Dist -f Enmity_Patches/Required/${Patch} &
+    Azule/azule -i Dist/Rosiecord_Cabin-Font.ipa -o Dist -f Enmity_Patches/Required/${Patch} &
     wait $!
-    mv Dist/Rosiecord_Base+${Patch}.ipa Dist/Rosiecord_Base.ipa
+    mv Dist/Rosiecord_Cabin-Font+${Patch}.ipa Dist/Rosiecord_Cabin-Font.ipa
 
-    Azule/azule -i Dist/Rosiecord_No_Font.ipa -o Dist -f Enmity_Patches/Required/${Patch} &
+    Azule/azule -i Dist/Rosiecord_GGSans-Font.ipa -o Dist -f Enmity_Patches/Required/${Patch} &
     wait $!
-    mv Dist/Rosiecord_No_Font+${Patch}.ipa Dist/Rosiecord_No_Font.ipa
+    mv Dist/Rosiecord_GGSans-Font+${Patch}.ipa Dist/Rosiecord_GGSans-Font.ipa
 done
 
 # create a new ipa with each pack injected from the base ipa
 for Pack in $(ls Packs)
 do
-    unzip Dist/Rosiecord_Base.ipa
+    unzip Dist/Rosiecord_Cabin-Font.ipa
     cp -rf Packs/${Pack}/* Payload/Discord.app/assets/
-    zip -r Dist/Rosiecord_Base+${Pack}_Icons.ipa Payload
+    zip -r Dist/Rosiecord_Cabin-Font+${Pack}_Icons.ipa Payload
     rm -rf Payload
 
-    unzip Dist/Rosiecord_No_Font.ipa
+    unzip Dist/Rosiecord_GGSans-Font.ipa
     cp -rf Packs/${Pack}/* Payload/Discord.app/assets/
-    zip -r Dist/Rosiecord_No_Font+${Pack}_Icons.ipa Payload
+    zip -r Dist/Rosiecord_GGSans-Font+${Pack}_Icons.ipa Payload
     rm -rf Payload
 done
 
