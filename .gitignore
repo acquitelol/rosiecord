@@ -4,3 +4,4 @@ test.sh
 semver2.sh
 Flowercord_Patcher/.theos
 Flowercord_Patcher/.vscode
+node_modules
