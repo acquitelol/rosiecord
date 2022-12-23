@@ -38,24 +38,24 @@ class Shell {
         })
     }
 
-    static async run(command: string = 'ls', after = (errs: ExecException | null, output: string): void => {}): Promise<string> {
-        return await new Promise((resolve, _): void => {
-            exec(command, (errors, output): void => {
-                after(errors, output);
-                resolve(output);
+    static async run(command: string = 'ls', after = (stderr: ExecException | null, stdout: string): void => {}): Promise<string> {
+        return await new Promise((resolve): void => {
+            exec(command, (stderr, stdout): void => {
+                after(stderr, stdout);
+                resolve(stdout);
             });
         });
     }
 
-    static async runSilently(command: string = 'ls', after = (errs: ExecException | null, output: string): void => {}): Promise<string> {
-        return await new Promise((resolve, _): void => {
+    static async runSilently(command: string = 'ls', after = (stderr: ExecException | null, stdout: string): void => {}): Promise<string> {
+        return await new Promise((resolve): void => {
             const finalCommand: string = command.includes('&')
                 ? command.split('&')[0] + '> /dev/null ' + "&" + command.split('&')[1]
                 : command + ' > /dev/null'
 
-            exec(finalCommand, (errors, output): void => {
-                after(errors, output);
-                resolve(output);
+            exec(finalCommand, (stderr, stdout): void => {
+                after(stderr, stdout);
+                resolve(stdout);
             });
         });
     }
@@ -90,8 +90,8 @@ class Main extends Colors {
 
     async get(item: string): Promise<string[]> {
         const ipaArray: string[] = [];
-        await Shell.run(item, (_, output) => {
-            output.split('\n').filter(ipa => ipa!=="").forEach(ipa => ipaArray.push(ipa))
+        await Shell.run(item, (_, stdout) => {
+            stdout.split('\n').filter(ipa => ipa!=="").forEach(ipa => ipaArray.push(ipa))
         })
 
         return ipaArray;
@@ -99,10 +99,10 @@ class Main extends Colors {
 
     async logCurrentState (ipaStates: any[], type: string): Promise<void> {
         const defaultStates = ipaStates.map(ipaItem => this.format(ipaItem, this.type));
-        const output = `${this.BLUE}${type}: [${this.PINK}${defaultStates.join(`${this.CYAN}, ${this.PINK}`)}${this.BLUE}]${this.ENDC}\r`
+        const stdout = `${this.BLUE}${type}: [${this.PINK}${defaultStates.join(`${this.CYAN}, ${this.PINK}`)}${this.BLUE}]${this.ENDC}\r`
 
-        await Shell.write('\r'.repeat(output.length))
-        await Shell.write(output)
+        await Shell.write('\r'.repeat(stdout.length))
+        await Shell.write(stdout)
     }
 
     async Main(callable: CallableFunction): Promise<void> {
@@ -135,7 +135,7 @@ class Inject extends Colors {
 
     async run(M: Main, callable: CallableFunction): Promise<void> {
         const requiredPatches = await M.get(this.getParam)
-        const outputIpas = await M.get('ls Dist');
+        const stdoutIpas = await M.get('ls Dist');
         const tweakStates = requiredPatches.map(ipa => new State('pending', ipa))
         const S = new States();
 
@@ -144,14 +144,14 @@ class Inject extends Colors {
 
         for (const i in requiredPatches) {
             let patched: number = 0;
-            for (const j in outputIpas) {
-                const ipaName: string = outputIpas[j].split('.')[0]
+            for (const j in stdoutIpas) {
+                const ipaName: string = stdoutIpas[j].split('.')[0]
                 const patchName: string = requiredPatches[i]
 
                 await callable(ipaName, patchName);
                 patched++;
 
-                const isComplete: boolean = patched===outputIpas.length;
+                const isComplete: boolean = patched===stdoutIpas.length;
 
                 // @ts-ignore
                 isComplete ? tweakStates.find(patch => patch.name===patchName).state = 'success' : null;
@@ -172,8 +172,8 @@ const EntryPoint = async (index: number) => {
                 await Shell.write(`${M.CYAN}Packaging the ${M.PINK}Base IPAs${M.CYAN}. If an ${M.PINK}IPA${M.CYAN} has been ${M.GREEN}successfully${M.CYAN} packaged, it will look like this: ${M.BLUE}"${M.PINK}[${M.CYAN}+${M.PINK}]${M.GREEN} Example IPA${M.BLUE}"\n`)
                 await M.logCurrentState(ipaStates, "Base Font IPAs")
 
-                await Shell.runSilently('zip -q -r Dist/Rosiecord_GGSans-Font.ipa Payload & wait $!', async (errs, _) => {
-                    ipaStates[0].state = errs ? 'failure' : 'success'
+                await Shell.runSilently('zip -q -r Dist/Rosiecord_GGSans-Font.ipa Payload & wait $!', async (stderr, _) => {
+                    ipaStates[0].state = stderr ? 'failure' : 'success'
                     await M.logCurrentState(ipaStates, 'Base Font IPAs')
                 });
                 await Shell.runSilently(`rm -rf Payload & wait $!`)
@@ -196,7 +196,7 @@ const EntryPoint = async (index: number) => {
         const M: Main = new Main('Tweak', 'Required Tweaks');
         await M.Main(async (): Promise<void> => {
             await new Inject("Tweak", "all Required Tweaks", true, 'ls Enmity_Patches/Required').run(M, async (ipaName: string, patchName: string) => {
-                await Shell.runSilently(`Azule/azule -i Dist/${ipaName}.ipa -o Dist -f Enmity_Patches/Required/${patchName} -s & wait $!`)
+                await Shell.runSilently(`Azule/azule -i Dist/${ipaName}.ipa -o Dist -f Enmity_Patches/Required/${patchName} & wait $!`)
                 await Shell.runSilently(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}.ipa`)
             })
         })
@@ -220,7 +220,7 @@ const EntryPoint = async (index: number) => {
         const M: Main = new Main('Tweak', "Flowercord Variations");
         await M.Main(async (): Promise<void> => {
             await new Inject("Flowercord", 'Flowercord', false, "ls Enmity_Patches/Optional").run(M, async (ipaName: string, patchName: string) => {
-                await Shell.runSilently(`Azule/azule -i Dist/${ipaName}.ipa -o Dist -f Enmity_Patches/Optional/${patchName} -s & wait $!`);
+                await Shell.runSilently(`Azule/azule -i Dist/${ipaName}.ipa -o Dist -f Enmity_Patches/Optional/${patchName} & wait $!`);
                 await Shell.runSilently(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}+Flowercord.ipa`)
             })
         })
@@ -250,8 +250,8 @@ class Initialiser extends States {
         process.chdir('Flowercord_Patcher');
 
         await Shell.runSilently(`rm -rf packages/*`);
-        await Shell.run(`make package`, async (errs) => {
-            await Shell.write(errs
+        await Shell.run(`make package`, async (stderr) => {
+            await Shell.write(stderr
                 ? `${this.FAILURE} An error occured while packaging ${this.PINK}"${this.CYAN}Flowercord${this.PINK}"${this.RED}.${this.ENDC}\n`
                 : `${this.SUCCESS} Successfully installed ${this.PINK}"${this.CYAN}Flowercord${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./Enmity_Patches/Optional/${this.PINK}"${this.GREEN}.${this.ENDC}\n`)
         });
@@ -265,14 +265,14 @@ class Initialiser extends States {
     async InitializeAzule(): Promise<void> {
         fs.existsSync('Azule')
             ? await Shell.write(`${this.SUCCESS}${this.PINK} Azule${this.GREEN} already exists in ${this.PINK}"${this.CYAN}./${this.PINK}"${this.GREEN}...${this.ENDC}\n`)
-            : async () => {
+            : await (async () => {
                 await Shell.write(`${this.PENDING}${this.PINK} Installing ${this.CYAN}"Azule"${this.PINK}. ${this.BLUE}This may take a while...${this.ENDC}\r`)
-                await Shell.runSilently(`git clone https://github.com/Al4ise/Azule & wait $!`, async (errs) => {
-                    await Shell.write(errs
-                        ? `${this.FAILURE} An error occured while installing ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.RED}.${this.ENDC}`
-                        : `${this.SUCCESS} Successfully installed ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./${this.PINK}"${this.GREEN}.${this.ENDC}`)
+                await Shell.run(`git clone https://github.com/Al4ise/Azule & wait $!`, async (stderr) => {
+                    await Shell.write(stderr
+                        ? `${this.FAILURE} An error occured while installing ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.RED}.${this.ENDC}\n`
+                        : `${this.SUCCESS} Successfully installed ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./${this.PINK}"${this.GREEN}.${this.ENDC}\n`)
                 })
-            }
+            })();
     }
 }
 
@@ -295,8 +295,8 @@ const main = async (): Promise<void> => {
     await D.logDivider();
 
     await Shell.write(`${S.PENDING}${M.CYAN} Clearing existing ${M.PINK}\"IPAs\"${M.CYAN} in ${M.PINK}\"./Dist\".${M.ENDC}\r`);
-    await Shell.runSilently('mkdir -p Dist/ & wait $!; rm -rf Dist/* & wait $!; rm -rf Payload & wait $!;', (errs) => {
-        Shell.write( errs
+    await Shell.runSilently('mkdir -p Dist/ & wait $!; rm -rf Dist/* & wait $!; rm -rf Payload & wait $!;', (stderr) => {
+        Shell.write( stderr
             ? `${S.FAILURE} An error occurred while clearing existing ${M.PINK}\"IPAs\" in ${M.PINK}\"./Dist\".${M.ENDC}\n`
             : `${S.SUCCESS} Successfully cleared existing ${M.PINK}\"IPAs\"${M.GREEN} in ${M.PINK}\"./Dist\".${M.ENDC}\n`
         )
@@ -309,8 +309,8 @@ const main = async (): Promise<void> => {
     await Shell.write(`${S.SUCCESS} Directory of IPA: ${M.PINK}${IPA_DIR}${M.ENDC}\n`);
 
     await Shell.write(`${S.PENDING}${M.CYAN} Unzipping ${M.PINK}\"${IPA_DIR}\"${M.CYAN} into ${M.PINK}\"./Payload\".${M.ENDC}\r`);
-    await Shell.runSilently(`unzip -o ${IPA_DIR} & wait $!`, (errs) => {
-        Shell.write(errs
+    await Shell.runSilently(`unzip -o ${IPA_DIR} & wait $!`, (stderr) => {
+        Shell.write(stderr
             ? `${S.FAILURE} An error occurred while unzipping ${M.PINK}\"${IPA_DIR}\".${M.ENDC}\n`
             : `${S.SUCCESS} Successfully unzipped ${M.PINK}\"${IPA_DIR}\"${M.GREEN} into ${M.PINK}\"./Payload\".${M.ENDC}\n`
         )
@@ -322,24 +322,24 @@ const main = async (): Promise<void> => {
 
     await Shell.write(`${S.PENDING}${M.CYAN} Replacing Discord's Name To ${M.PINK}\"Rosiecord\".${M.ENDC}\r`);
     await Shell.runSilently(`plutil -replace CFBundleName -string "Rosiecord" ${MAIN_PLIST} & wait $!`);
-    await Shell.runSilently(`plutil -replace CFBundleDisplayName -string "Rosiecord" ${MAIN_PLIST} & wait $!`, (errs) => {
-        Shell.write(errs
+    await Shell.runSilently(`plutil -replace CFBundleDisplayName -string "Rosiecord" ${MAIN_PLIST} & wait $!`, (stderr) => {
+        Shell.write(stderr
             ? `${S.FAILURE} An error occurred while Replacing ${M.PINK}\"Discord's Name\".${M.ENDC}\n`
             : `${S.SUCCESS} Successfully Replaced ${M.PINK}\"Discord's Name\"${M.GREEN} to ${M.PINK}\"Rosiecord\".${M.ENDC}\n`
         );
     });
 
     await Shell.write(`${S.PENDING}${M.CYAN} Patching Discord's URL Scheme To ${M.PINK}\"Add Enmity's URL Handler\".${M.ENDC}\r`);
-    await Shell.runSilently(`plutil -insert CFBundleURLTypes.1 -xml "<dict><key>CFBundleURLName</key><string>Enmity</string><key>CFBundleURLSchemes</key><array><string>enmity</string></array></dict>" ${MAIN_PLIST} & wait $!`, (errs) => {
-        Shell.write(errs
+    await Shell.runSilently(`plutil -insert CFBundleURLTypes.1 -xml "<dict><key>CFBundleURLName</key><string>Enmity</string><key>CFBundleURLSchemes</key><array><string>enmity</string></array></dict>" ${MAIN_PLIST} & wait $!`, (stderr) => {
+        Shell.write(stderr
             ? `${S.FAILURE} An error occurred while Patching ${M.PINK}\"Discord's URL Scheme\".${M.ENDC}\n`
             : `${S.SUCCESS} Successfully Patched ${M.PINK}\"Discord's URL Scheme\"${M.GREEN} to ${M.PINK}\./Add Enmity's URL Handler\".${M.ENDC}\n`
         );
     });
 
     await Shell.write(`${S.PENDING}${M.CYAN} Removing Discord's ${M.PINK}\"Supported Device Limits\"${M.CYAN}.${M.ENDC}\r`);
-    await Shell.runSilently(`plutil -remove UISupportedDevices ${MAIN_PLIST} & wait $!`, (errs) => {
-        Shell.write(errs
+    await Shell.runSilently(`plutil -remove UISupportedDevices ${MAIN_PLIST} & wait $!`, (stderr) => {
+        Shell.write(stderr
             ? `${S.FAILURE} An error occurred while removing Discord's ${M.PINK}\"Supported Device Limits\"${M.RED}.${M.ENDC}\n`
             : `${S.SUCCESS} Successfully Removed Discord's ${M.PINK}\"Supported Device Limits\"${M.GREEN}.${M.ENDC}\n`
         );
@@ -348,8 +348,8 @@ const main = async (): Promise<void> => {
     await Shell.write(`${S.PENDING}${M.CYAN} Patching ${M.PINK}\"Discord's Icons\" ${M.CYAN} to ${M.PINK}\"Enmity's Icons\"${M.CYAN}.${M.ENDC}\r`);
     await Shell.runSilently(`cp -rf Icons/* Payload/Discord.app/`)
     await Shell.runSilently(`plutil -replace CFBundleIcons -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" ${MAIN_PLIST} & wait $!`)
-    await Shell.runSilently(`plutil -replace CFBundleIcons~ipad -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string><string>EnmityIcon76x76</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" ${MAIN_PLIST} & wait $!`, (errs) => {
-        Shell.write(errs
+    await Shell.runSilently(`plutil -replace CFBundleIcons~ipad -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string><string>EnmityIcon76x76</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" ${MAIN_PLIST} & wait $!`, (stderr) => {
+        Shell.write(stderr
              ? `${S.FAILURE} An error occurred while removing Discord's ${M.PINK}\"Supported Device Limits\"${M.RED}.${M.ENDC}\n`
              : `${S.SUCCESS} Successfully Patched ${M.PINK}\"Discord's Icons\"${M.GREEN} to ${M.PINK}\"Enmity's Icons\"${M.GREEN}.${M.ENDC}\n`
         )
@@ -357,8 +357,8 @@ const main = async (): Promise<void> => {
 
     await Shell.write(`${S.PENDING}${M.CYAN} Enabling ${M.PINK}\"UISupportsDocumentBrowser\"${M.CYAN} and ${M.PINK}\"UIFileSharingEnabled\"${M.CYAN}.${M.ENDC}\r`);
     await Shell.run(`plutil -replace UISupportsDocumentBrowser -bool true ${MAIN_PLIST} & wait $!`)
-    await Shell.run(`plutil -replace UIFileSharingEnabled -bool true ${MAIN_PLIST} & wait $!`, (errs) => {
-        Shell.write(errs
+    await Shell.run(`plutil -replace UIFileSharingEnabled -bool true ${MAIN_PLIST} & wait $!`, (stderr) => {
+        Shell.write(stderr
             ? `${S.FAILURE} An error occurred while Enabling ${M.PINK}\"UISupportsDocumentBrowser\"${M.RED} and ${M.PINK}\"UIFileSharingEnabled\"${M.RED}.${M.ENDC}\n`
             : `${S.SUCCESS} Successfully Enabled ${M.PINK}\"UISupportsDocumentBrowser\"${M.GREEN} and ${M.PINK}\"UIFileSharingEnabled\"${M.GREEN}.${M.ENDC}\n`
         )
