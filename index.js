@@ -215,10 +215,11 @@ class Initialiser extends States {
             ? await Shell.write(`${this.SUCCESS}${this.PINK} Azule${this.GREEN} already exists in ${this.PINK}"${this.CYAN}./${this.PINK}"${this.GREEN}...${this.ENDC}\n`)
             : await (async () => {
                 await Shell.write(`${this.PENDING}${this.PINK} Installing ${this.CYAN}"Azule"${this.PINK}. ${this.BLUE}This may take a while...${this.ENDC}\r`);
-                await Shell.run(`git clone https://github.com/Al4ise/Azule & wait $!`, async (stderr) => {
+                await Shell.run(`git clone https://github.com/Al4ise/Azule & wait $!`, async (stderr, stdout) => {
                     await Shell.write(stderr
                         ? `${this.FAILURE} An error occured while installing ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.RED}.${this.ENDC}\n`
                         : `${this.SUCCESS} Successfully installed ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./${this.PINK}"${this.GREEN}.${this.ENDC}\n`);
+                    await Shell.write(stdout);
                 });
             })();
     }
