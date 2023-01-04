@@ -10,15 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Run Main Node Script to Patch Rosiecord (With k2genmity as a argv)
+        id: node_sh
+        run: node ./index.js k2genmity
+        
       - name: Retrieve version
         run: |
           cd ./ipas
           echo "::set-output name=DISCORD_VERSION::$(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)"   
         id: version
-
-      - name: Run Main Node Script to Patch Rosiecord (With k2genmity as a argv)
-        id: node_sh
-        run: node ./index.js k2genmity
         
       - name: Create release
         uses: marvinpinto/action-automatic-releases@latest
