@@ -246,12 +246,11 @@ const main = async () => {
     const IPA_LINK = "https://cdn.discordapp.com/attachments/986937851042213888/1054952894589309008/Discord_158.0.ipa";
     const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0]; // Gets just the IPA Name, "Discord_158" or whatever
     await Shell.write(`${S.PENDING}${M.CYAN} Downloading ${M.PINK}\"${IPA_NAME}.ipa\"${M.CYAN} into ${M.PINK}\"./Ipas\".${M.ENDC}\r`);
-    await Shell.runSilently(`rm -rf Ipas/* & wait $!`);
+    await Shell.runSilently(`mkdir Ipas; rm -rf Ipas/* & wait $!;`);
     await Shell.runSilently(`curl ${IPA_LINK} -o Ipas/${IPA_NAME}.ipa`, (stderr) => {
         Shell.write(stderr
             ? `${S.FAILURE} An error occurred while downloading ${M.PINK}\"${IPA_NAME}.ipa\" into ${M.PINK}\"./Ipas\".${M.ENDC}\n`
             : `${S.SUCCESS} Successfully downloaded ${M.PINK}\"${IPA_NAME}.ipa\"${M.GREEN} into ${M.PINK}\"./Ipas\".${M.ENDC}\n`);
-        Shell.write(stderr);
     });
     const IPA_DIR = `Ipas/${IPA_NAME}.ipa`;
     await Shell.write(`${S.SUCCESS} Directory of IPA: ${M.PINK}${IPA_DIR}${M.ENDC}\n`);
