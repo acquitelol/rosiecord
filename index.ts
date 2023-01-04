@@ -9,6 +9,8 @@
 import { exec, ExecException } from 'child_process';
 import fs from 'fs';
 
+const GLOBAL_DIST_DIR = process.argv[2] == "k2genmity" ? "Dist_K2genmity" : "Dist"
+ 
 class Colors {
     RED: string = '\x1b[91m';
     GREEN: string = '\x1b[92m';
@@ -134,8 +136,8 @@ class Inject extends Colors {
     }
 
     async run(M: Main, callable: CallableFunction): Promise<void> {
-        const requiredPatches = await M.get(this.getParam)
-        const stdoutIpas = await M.get('ls Dist');
+        const requiredPatches = await (await M.get(this.getParam)).filter(item => process.argv[2] == "k2genmity" ? (item !== "Enmity.Development.deb") : "K2genmity.Development.deb")
+        const stdoutIpas = await M.get(`ls ${GLOBAL_DIST_DIR}`);
         const tweakStates = requiredPatches.map(ipa => new State('pending', ipa))
         const S = new States();
 
@@ -172,16 +174,16 @@ const EntryPoint = async (index: number) => {
                 await Shell.write(`${M.CYAN}Packaging the ${M.PINK}Base IPAs${M.CYAN}. If an ${M.PINK}IPA${M.CYAN} has been ${M.GREEN}successfully${M.CYAN} packaged, it will look like this: ${M.BLUE}"${M.PINK}[${M.CYAN}+${M.PINK}]${M.GREEN} Example IPA${M.BLUE}"\n`)
                 await M.logCurrentState(ipaStates, "Base Font IPAs")
 
-                await Shell.runSilently('zip -q -r Dist/Rosiecord_GGSans-Font.ipa Payload & wait $!', async (stderr, _) => {
+                await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/Rosiecord_GGSans-Font.ipa Payload & wait $!`, async (stderr, _) => {
                     ipaStates[0].state = stderr ? 'failure' : 'success'
                     await M.logCurrentState(ipaStates, 'Base Font IPAs')
                 });
                 await Shell.runSilently(`rm -rf Payload & wait $!`)
 
                 for (const Font of ipaList.filter(ipa => ipa !== 'GGSans')) {
-                    await Shell.runSilently('unzip -qq -o Dist/Rosiecord_GGSans-Font.ipa');
+                    await Shell.runSilently(`unzip -qq -o ${GLOBAL_DIST_DIR}/Rosiecord_GGSans-Font.ipa`);
                     await Shell.runSilently(`cp -rf Fonts/woff2/${Font}/* Payload/Discord.app/`)
-                    await Shell.runSilently(`zip -q -r Dist/Rosiecord_${Font}-Font.ipa Payload & wait $!`)
+                    await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/Rosiecord_${Font}-Font.ipa Payload & wait $!`)
                     await Shell.runSilently(`rm -rf Payload & wait $!`)
 
                     // @ts-ignore
@@ -196,8 +198,8 @@ const EntryPoint = async (index: number) => {
         const M: Main = new Main('Tweak', 'Required Tweaks');
         await M.Main(async (): Promise<void> => {
             await new Inject("Tweak", "all Required Tweaks", true, 'ls Enmity_Patches/Required').run(M, async (ipaName: string, patchName: string) => {
-                await Shell.runSilently(`Azule/azule -i Dist/${ipaName}.ipa -o Dist -f Enmity_Patches/Required/${patchName} & wait $!`)
-                await Shell.runSilently(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}.ipa`)
+                await Shell.runSilently(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f Enmity_Patches/Required/${patchName} & wait $!`)
+                await Shell.runSilently(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}.ipa`)
             })
         })
 
@@ -207,9 +209,9 @@ const EntryPoint = async (index: number) => {
         const M: Main = new Main('Pack', 'Icon Packs');
         await M.Main(async (): Promise<void> => {
             await new Inject("Pack", "all Icon Packs", true, 'ls Packs').run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`unzip -qq -o Dist/${ipaName}.ipa`)
+                await Shell.run(`unzip -qq -o ${GLOBAL_DIST_DIR}/${ipaName}.ipa`)
                 await Shell.runSilently(`cp -rf Packs/${patchName}/* Payload/Discord.app/assets/`)
-                await Shell.runSilently(`zip -q -r Dist/${ipaName}+${patchName}_Icons.ipa Payload`)
+                await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}_Icons.ipa Payload`)
                 await Shell.runSilently(`rm -rf Payload`)
             })
         })
@@ -220,8 +222,8 @@ const EntryPoint = async (index: number) => {
         const M: Main = new Main('Tweak', "Flowercord Variations");
         await M.Main(async (): Promise<void> => {
             await new Inject("Flowercord", 'Flowercord', false, "ls Enmity_Patches/Optional").run(M, async (ipaName: string, patchName: string) => {
-                await Shell.runSilently(`Azule/azule -i Dist/${ipaName}.ipa -o Dist -f Enmity_Patches/Optional/${patchName} & wait $!`);
-                await Shell.runSilently(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}+Flowercord.ipa`)
+                await Shell.runSilently(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f Enmity_Patches/Optional/${patchName} & wait $!`);
+                await Shell.runSilently(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}+Flowercord.ipa`)
             })
         })
 
@@ -295,16 +297,25 @@ const main = async (): Promise<void> => {
 
     await D.logDivider();
 
-    await Shell.write(`${S.PENDING}${M.CYAN} Clearing existing ${M.PINK}\"IPAs\"${M.CYAN} in ${M.PINK}\"./Dist\".${M.ENDC}\r`);
-    await Shell.runSilently('mkdir -p Dist/ & wait $!; rm -rf Dist/* & wait $!; rm -rf Payload & wait $!;', (stderr) => {
+    await Shell.write(`${S.PENDING}${M.CYAN} Clearing existing ${M.PINK}\"IPAs\"${M.CYAN} in ${M.PINK}\"./${GLOBAL_DIST_DIR}\".${M.ENDC}\r`);
+    await Shell.runSilently(`mkdir -p ${GLOBAL_DIST_DIR}/ & wait $!; rm -rf ${GLOBAL_DIST_DIR}/* & wait $!; rm -rf Payload & wait $!`, (stderr) => {
         Shell.write( stderr
-            ? `${S.FAILURE} An error occurred while clearing existing ${M.PINK}\"IPAs\" in ${M.PINK}\"./Dist\".${M.ENDC}\n`
-            : `${S.SUCCESS} Successfully cleared existing ${M.PINK}\"IPAs\"${M.GREEN} in ${M.PINK}\"./Dist\".${M.ENDC}\n`
+            ? `${S.FAILURE} An error occurred while clearing existing ${M.PINK}\"IPAs\" in ${M.PINK}\"./${GLOBAL_DIST_DIR}\".${M.ENDC}\n`
+            : `${S.SUCCESS} Successfully cleared existing ${M.PINK}\"IPAs\"${M.GREEN} in ${M.PINK}\"./${GLOBAL_DIST_DIR}\".${M.ENDC}\n`
         )
     });
 
-    const IPAS: string[] = await M.get('ls Ipas')
-    const IPA_NAME: string = IPAS[0].split('.')[0]
+    const IPA_LINK = "https://cdn.discordapp.com/attachments/986937851042213888/1054952894589309008/Discord_158.0.ipa";
+    const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0] // Gets just the IPA Name, "Discord_158" or whatever
+
+    await Shell.write(`${S.PENDING}${M.CYAN} Downloading ${M.PINK}\"${IPA_NAME}.ipa\"${M.CYAN} into ${M.PINK}\"./Ipas\".${M.ENDC}\r`);
+    await Shell.runSilently(`rm -rf Ipas/* & wait $!`);
+    await Shell.runSilently(`curl ${IPA_LINK} -o Ipas/${IPA_NAME}.ipa`, (stderr) => {
+        Shell.write( stderr
+            ? `${S.FAILURE} An error occurred while downloading ${M.PINK}\"${IPA_NAME}.ipa\" into ${M.PINK}\"./Ipas\".${M.ENDC}\n`
+            : `${S.SUCCESS} Successfully downloaded ${M.PINK}\"${IPA_NAME}.ipa\"${M.GREEN} into ${M.PINK}\"./Ipas\".${M.ENDC}\n`
+        )
+    });
     const IPA_DIR: string = `Ipas/${IPA_NAME}.ipa`;
 
     await Shell.write(`${S.SUCCESS} Directory of IPA: ${M.PINK}${IPA_DIR}${M.ENDC}\n`);
@@ -321,12 +332,13 @@ const main = async (): Promise<void> => {
 
     const MAIN_PLIST: string = `Payload/Discord.app/Info.plist`;
 
-    await Shell.write(`${S.PENDING}${M.CYAN} Replacing Discord's Name To ${M.PINK}\"Rosiecord\".${M.ENDC}\r`);
-    await Shell.runSilently(`plutil -replace CFBundleName -string "Rosiecord" ${MAIN_PLIST} & wait $!`);
+    const name: string = "Rosiecord";
+    await Shell.write(`${S.PENDING}${M.CYAN} Replacing Discord's Name To ${M.PINK}\"${name}\".${M.ENDC}\r`);
+    await Shell.runSilently(`plutil -replace CFBundleName -string "${name}" ${MAIN_PLIST} & wait $!`);
     await Shell.runSilently(`plutil -replace CFBundleDisplayName -string "Rosiecord" ${MAIN_PLIST} & wait $!`, (stderr) => {
         Shell.write(stderr
             ? `${S.FAILURE} An error occurred while Replacing ${M.PINK}\"Discord's Name\".${M.ENDC}\n`
-            : `${S.SUCCESS} Successfully Replaced ${M.PINK}\"Discord's Name\"${M.GREEN} to ${M.PINK}\"Rosiecord\".${M.ENDC}\n`
+            : `${S.SUCCESS} Successfully Replaced ${M.PINK}\"Discord's Name\"${M.GREEN} to ${M.PINK}\"${name}\".${M.ENDC}\n`
         );
     });
 
@@ -365,6 +377,16 @@ const main = async (): Promise<void> => {
         )
     });
 
+    if (process.argv[2] == "k2genmity") {
+        await Shell.write(`${S.PENDING}${M.CYAN} Modifying ${M.PINK}\"NSFaceIDUsageDescription\"${M.CYAN} and adding ${M.PINK}\"K2genmity\"${M.CYAN}.${M.ENDC}\r`);
+        await Shell.run(`plutil -replace NSFaceIDUsageDescription -string "K2genmity" ${MAIN_PLIST} & wait $!`, (stderr) => {
+            Shell.write(stderr
+                ? `${S.FAILURE} An error occurred while modifying ${M.PINK}\"NSFaceIDUsageDescription\"${M.RED}.${M.ENDC}\n`
+                : `${S.SUCCESS} Successfully modified ${M.PINK}\"NSFaceIDUsageDescription\"${M.GREEN} and added ${M.PINK}\"K2genmity\"${M.GREEN}.${M.ENDC}\n`
+            )
+        });
+    }
+    
     await D.logDivider();
 
     await Init.PackageFlowercord();
