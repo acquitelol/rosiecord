@@ -8,3 +8,5 @@ Flowercord_Patcher/.vscode
 node_modules
 !Ipas/.gitkeep
 Ipas/*
+Fonts/woff2/tmp
+Fonts/woff2/Cute

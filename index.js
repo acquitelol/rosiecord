@@ -243,7 +243,7 @@ const main = async () => {
             ? `${S.FAILURE} An error occurred while clearing existing ${M.PINK}\"IPAs\" in ${M.PINK}\"./${GLOBAL_DIST_DIR}\".${M.ENDC}\n`
             : `${S.SUCCESS} Successfully cleared existing ${M.PINK}\"IPAs\"${M.GREEN} in ${M.PINK}\"./${GLOBAL_DIST_DIR}\".${M.ENDC}\n`);
     });
-    const IPA_LINK = "https://cdn.discordapp.com/attachments/986937851042213888/1054952894589309008/Discord_158.0.ipa";
+    const IPA_LINK = "https://cdn.discordapp.com/attachments/1015971724895989780/1055819923093467179/Discord_159.0.ipa";
     const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0]; // Gets just the IPA Name, "Discord_158" or whatever
     await Shell.write(`${S.PENDING}${M.CYAN} Downloading ${M.PINK}\"${IPA_NAME}.ipa\"${M.CYAN} into ${M.PINK}\"./Ipas\".${M.ENDC}\r`);
     await Shell.runSilently(`mkdir Ipas; rm -rf Ipas/* & wait $!;`);
