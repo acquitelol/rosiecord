@@ -305,7 +305,7 @@ const main = async (): Promise<void> => {
         )
     });
 
-    const IPA_LINK = "https://cdn.discordapp.com/attachments/1015971724895989780/1055819923093467179/Discord_159.0.ipa";
+    const IPA_LINK = "https://cdn.discordapp.com/attachments/986937851042213888/1054952894589309008/Discord_158.0.ipa";
     const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0] // Gets just the IPA Name, "Discord_158" or whatever
 
     await Shell.write(`${S.PENDING}${M.CYAN} Downloading ${M.PINK}\"${IPA_NAME}.ipa\"${M.CYAN} into ${M.PINK}\"./Ipas\".${M.ENDC}\r`);
@@ -399,6 +399,14 @@ const main = async (): Promise<void> => {
         await D.logDivider();
         // await new Promise((resolve) => setTimeout(() => resolve(), 2000));
     }
+
+    await Shell.write(`${S.PENDING}${M.CYAN} Cleaning up ${M.PINK}\"remaining files which aren't needed\"${M.CYAN}...${M.ENDC}\r`);
+    await Shell.runSilently(`rm -rf Ipas/* & wait $!;`, (stderr) => {
+        Shell.write( stderr
+            ? `${S.FAILURE} An error occurred while cleaning up ${M.PINK}\"remaning files\"${M.CYAN}.${M.ENDC}\n`
+            : `${S.SUCCESS} Successfully cleaned up ${M.PINK}\"remaining files which aren't needed\"${M.GREEN}.${M.ENDC}\n`
+        )
+    });
 
     const END_TIME = Date.now();
     await Shell.write(`${S.SUCCESS} Successfully built ${M.PINK}Rosiecord${M.GREEN} in ${M.CYAN}${(END_TIME-START_TIME)/1000} seconds${M.GREEN}.`)

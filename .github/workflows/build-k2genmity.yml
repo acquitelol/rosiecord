@@ -25,6 +25,6 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          automatic_release_tag: rosiecord_${{ steps.version.outputs.DISCORD_VERSION }}_wK2Genmity
+          automatic_release_tag: rosiecord_${{ steps.version.outputs.DISCORD_VERSION }}_k2genmity
           title: Rosiecord ${{ steps.version.outputs.DISCORD_VERSION }} (K2Genmity)
           files: Dist_K2genmity/*.ipa
