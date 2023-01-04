@@ -400,14 +400,6 @@ const main = async (): Promise<void> => {
         // await new Promise((resolve) => setTimeout(() => resolve(), 2000));
     }
 
-    await Shell.write(`${S.PENDING}${M.CYAN} Cleaning up ${M.PINK}\"remaining files which aren't needed\"${M.CYAN}...${M.ENDC}\r`);
-    await Shell.runSilently(`rm -rf Ipas/* & wait $!;`, (stderr) => {
-        Shell.write( stderr
-            ? `${S.FAILURE} An error occurred while cleaning up ${M.PINK}\"remaning files\"${M.CYAN}.${M.ENDC}\n`
-            : `${S.SUCCESS} Successfully cleaned up ${M.PINK}\"remaining files which aren't needed\"${M.GREEN}.${M.ENDC}\n`
-        )
-    });
-
     const END_TIME = Date.now();
     await Shell.write(`${S.SUCCESS} Successfully built ${M.PINK}Rosiecord${M.GREEN} in ${M.CYAN}${(END_TIME-START_TIME)/1000} seconds${M.GREEN}.`)
 }
