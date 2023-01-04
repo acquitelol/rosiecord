@@ -28,8 +28,8 @@ class States extends Colors {
 class Shell {
     static async write(text) {
         return await new Promise((resolve) => {
-            process.stdout.write(text);
-            resolve(text);
+            process.stdout.write(text.toString());
+            resolve(text.toString());
         });
     }
     static async run(command = 'ls', after = (stderr, stdout) => { }) {
@@ -251,6 +251,7 @@ const main = async () => {
         Shell.write(stderr
             ? `${S.FAILURE} An error occurred while downloading ${M.PINK}\"${IPA_NAME}.ipa\" into ${M.PINK}\"./Ipas\".${M.ENDC}\n`
             : `${S.SUCCESS} Successfully downloaded ${M.PINK}\"${IPA_NAME}.ipa\"${M.GREEN} into ${M.PINK}\"./Ipas\".${M.ENDC}\n`);
+        Shell.write(stderr);
     });
     const IPA_DIR = `Ipas/${IPA_NAME}.ipa`;
     await Shell.write(`${S.SUCCESS} Directory of IPA: ${M.PINK}${IPA_DIR}${M.ENDC}\n`);
