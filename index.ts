@@ -305,7 +305,7 @@ const main = async (): Promise<void> => {
         )
     });
 
-    const IPA_LINK = "https://cdn.discordapp.com/attachments/1011346757214543875/1062145073866870857/Discord_160.0.ipa";
+    const IPA_LINK = "https://cdn.discordapp.com/attachments/1011346757214543875/1062287485025132604/Discord_161.0.ipa";
     const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0] // Gets just the IPA Name, "Discord_158" or whatever
 
     await Shell.write(`${S.PENDING}${M.CYAN} Downloading ${M.PINK}\"${IPA_NAME}.ipa\"${M.CYAN} into ${M.PINK}\"./Ipas\".${M.ENDC}\r`);
