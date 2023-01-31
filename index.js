@@ -105,7 +105,11 @@ class Inject extends Colors {
         this.getParam = getParam;
     }
     async run(M, callable) {
-        const requiredPatches = await (await M.get(this.getParam)).filter(item => process.argv[2] == "k2genmity" ? (item !== "Enmity.Development.deb") : (item !== "K2genmity.Development.deb"));
+        const requiredPatches = await (await M.get(this.getParam)).filter(item => process.argv[2] == "k2genmity"
+            ? (item !== (item.includes("Development")
+                ? "Enmity.Development.Official.deb"
+                : "Enmity.deb"))
+            : (item !== "K2genmity.Development.deb"));
         const stdoutIpas = await M.get(`ls ${GLOBAL_DIST_DIR}`);
         const tweakStates = requiredPatches.map(ipa => new State('pending', ipa));
         const S = new States();
