@@ -30,7 +30,7 @@ Rosiecord_[[FontName]](https://github.com/acquitelol/rosiecord/tree/master/Fonts
 
 #### [Flowercord](https://github.com/acquitelol/rosiecord/tree/master/Flowercord_Patcher) is an optional tweak injected into the Rosiecord IPA
 
-#### It adds chat bubbles to messages and makes profile pictures in the chat area square. The following is a screenshot showing this:
+#### It adds chat bubbles to messages and makes profile pictures in the chat area square. The following is a screenshot showing this
 
 <img width="350" alt="Default with Flowercord" src="Rosiecord_Mocks/Default_Flowercord.png">
 
@@ -56,17 +56,9 @@ Rosiecord_[[FontName]](https://github.com/acquitelol/rosiecord/tree/master/Fonts
   <img width="350" alt="Plumpy with Flowercord" src="Rosiecord_Mocks/Plumpy_Flowercord.png">
 </div>
 
-## [Debrand](https://github.com/acquitelol/rosiecord/tree/master/Packs/Debrand) - [Install](https://github.com/acquitelol/rosiecord/releases/latest)
-
-(Similar to default icons. This pack is quite outdated.)
-<div style='display: flex;' align='left'>
-  <img width="350" alt="Debrand without Flowercord" src="Rosiecord_Mocks/Debrand.png">
-  <img width="350" alt="Debrand with Flowercord" src="Rosiecord_Mocks/Debrand_Flowercord.png">
-</div>
-
 ## [Iconsax](https://github.com/acquitelol/rosiecord/tree/master/Packs/Iconsax) - [Install](https://github.com/acquitelol/rosiecord/releases/latest)
 
-(Uses some icons from Plumpy, given by Flower, has some clean icons)
+(Uses some icons from Plumpy, given by Flower :3, includes quite modern icons.)
 <div style='display: flex;' align='left'>
   <img width="350" alt="Iconsax without Flowercord" src="Rosiecord_Mocks/Iconsax.png">
   <img width="350" alt="Iconsax with Flowercord" src="Rosiecord_Mocks/Iconsax_Flowercord.png">
