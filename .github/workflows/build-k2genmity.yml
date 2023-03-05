@@ -10,6 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Ensure coreutils are installed
+        id: coreutils
+        run: brew install coreutils
+        
       - name: Run Main Node Script to Patch Rosiecord (With k2genmity as a argv)
         id: node_sh
         run: node ./index.js k2genmity
