@@ -388,8 +388,6 @@ const main = async (): Promise<void> => {
     }
     
     await D.logDivider();
-
-    await Init.PackageTweak("Enmity", "yarn build", "Required");
     await Init.PackageTweak("Flowercord", "gmake package", "Optional");
     await Init.InitializeAzule();
 
