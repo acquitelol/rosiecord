@@ -156,7 +156,9 @@ const EntryPoint = async (index, ipaName) => {
             const M = new Main('Tweak', 'Required Tweaks');
             await M.Main(async () => {
                 await new Inject("Tweak", "all Required Tweaks", true, 'ls Enmity_Patches/Required').run(M, async (ipaName, patchName) => {
-                    await Shell.runSilently(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Required/${patchName} -v & wait $!`);
+                    await Shell.runSilently(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Required/${patchName} -v & wait $!`, (stderr, stdout) => {
+                        console.log(stdout, stderr);
+                    });
                     await Shell.runSilently(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}.ipa`);
                 });
             });
