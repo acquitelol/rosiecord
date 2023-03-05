@@ -156,10 +156,10 @@ const EntryPoint = async (index, ipaName) => {
             const M = new Main('Tweak', 'Required Tweaks');
             await M.Main(async () => {
                 await new Inject("Tweak", "all Required Tweaks", true, 'ls Enmity_Patches/Required').run(M, async (ipaName, patchName) => {
-                    await Shell.run(`Azule/azule -v`, (stderr, stdout) => {
+                    await Shell.run(`echo $PWD`, (stderr, stdout) => {
                         console.log({ stderr, stdout });
                     });
-                    await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Required/${patchName} -v & wait $!`, (stderr, stdout) => {
+                    await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Required/${patchName} -v -U & wait $!`, (stderr, stdout) => {
                         console.log({ stderr, stdout });
                     });
                     await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}.ipa`, (stderr, stdout) => {
@@ -185,10 +185,7 @@ const EntryPoint = async (index, ipaName) => {
             const M = new Main('Tweak', "Optional Variations");
             await M.Main(async () => {
                 await new Inject("Flowercord", 'Flowercord', false, "ls Enmity_Patches/Optional").run(M, async (ipaName, patchName) => {
-                    await Shell.run(`Azule/azule -v`, (stderr, stdout) => {
-                        console.log({ stderr, stdout });
-                    });
-                    await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Optional/${patchName} -v & wait $!`, (stderr, stdout) => {
+                    await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Optional/${patchName} -v -U & wait $!`, (stderr, stdout) => {
                         console.log({ stderr, stdout });
                     });
                     await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}+Flowercord.ipa`, (stderr, stdout) => {
