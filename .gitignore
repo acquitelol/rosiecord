@@ -3,8 +3,8 @@ Dist_K2genmity/*
 Azule
 test.sh
 semver2.sh
-Flowercord_Patcher/.theos
-Flowercord_Patcher/.vscode
+Tweaks/Flowercord/.theos
+Tweaks/Flowercord/.vscode
 node_modules
 !Ipas/.gitkeep
 Ipas/*

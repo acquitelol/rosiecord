@@ -1,5 +1,5 @@
 ARCHS = armv7 arm64 arm64e
-TARGET := iphone:clang:latest:14.0
+TARGET := iphone:clang:latest:7.0
 INSTALL_TARGET_PROCESSES = Discord
 FINALPACKAGE = 1
 

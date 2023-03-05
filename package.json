@@ -1,25 +1,24 @@
 {
-  "name": "enmity-custom-icons",
-  "version": "1.0.1",
+  "name": "rosiecord",
+  "version": "1.0.3",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "npm run build && node ."
+    "start": "clear && yarn build && node ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/acquitelol/enmity-custom-icons.git"
+    "url": "git+https://github.com/acquitelol/rosiecord.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["enmity", "rosiecord", "plumpycord"],
+  "author": "Rosie<3",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/acquitelol/enmity-custom-icons/issues"
+    "url": "https://github.com/acquitelol/rosiecord/issues"
   },
-  "homepage": "https://github.com/acquitelol/enmity-custom-icons#readme",
-  "description": "",
+  "homepage": "https://github.com/acquitelol/rosiecord#readme",
+  "description": "A wrapper for the @enmity-mod client which adds custom icons, fonts, and other modifications.",
   "devDependencies": {
     "@types/node": "^18.11.18",
     "nodemon": "^2.0.20",

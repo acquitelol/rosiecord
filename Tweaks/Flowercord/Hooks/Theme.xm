@@ -6,6 +6,7 @@
 #import <UIKit/UIKit.h>
 #include <objc/runtime.h>
 #include <substrate.h>
+#import <SpringBoard/SpringBoard.h>
 
 #import "Discord.h"
 
@@ -40,6 +41,18 @@ static void loadDynamicColors() {
 - (void)layoutSubviews {
     %orig();
     self.layer.cornerRadius = profile_radius;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [UIView animateWithDuration:0.3 animations:^{
+        self.alpha = 0.5;
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.alpha = 1.0;
+        }];
+    }];
+    
+    %orig;
 }
 
 %end
@@ -95,6 +108,9 @@ static void loadDynamicColors() {
 
 // Constructor
 %ctor {
+    @autoreleasepool {
+        [[NSBundle mainBundle] load];
+    }
     loadDynamicColors();
     %init();
 }
