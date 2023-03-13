@@ -75,7 +75,7 @@ static void loadDynamicColors() {
     [self insertSubview:self.customBackgroundView atIndex:0];
     self.customBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     self.customBackgroundView.layer.cornerRadius = chat_area_radius;
-    self.customBackgroundView.layer.masksToBounds = NO;
+    self.customBackgroundView.layer.masksToBounds = YES;
     self.customBackgroundView.backgroundColor = messageCellDynamicColor;
     [NSLayoutConstraint activateConstraints:@[
         [self.customBackgroundView.heightAnchor constraintEqualToAnchor:self.innerView.heightAnchor],

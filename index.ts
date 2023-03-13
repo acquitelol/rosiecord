@@ -219,6 +219,7 @@ const EntryPoint = async (index: number, ipaName: string) => {
         await M.Main(async (): Promise<void> => {
             await new Inject("Pack", "all Icon Packs", true, 'ls Packs').run(M, async (ipaName: string, patchName: string) => {
                 await Shell.run(`unzip -qq -o ${GLOBAL_DIST_DIR}/${ipaName}.ipa`)
+                await Shell.runSilently(`cp -rf Packs/${patchName}/Assets.car Payload/Discord.app/`)
                 await Shell.runSilently(`cp -rf Packs/${patchName}/* Payload/Discord.app/assets/`)
                 await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}_Icons.ipa Payload`)
                 await Shell.runSilently(`rm -rf Payload`)
