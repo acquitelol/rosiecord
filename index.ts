@@ -9,7 +9,7 @@
 import { exec, ExecException } from 'child_process';
 import fs from 'fs';
 import Constants from './constants.js';
-const { Colors, FORMAT, IPA_FETCH_LINK, GET_PATCH_TYPE } = Constants
+const { Colors, IPA_FETCH_LINK, GET_PATCH_TYPE } = Constants
 
 const GLOBAL_DIST_DIR = GET_PATCH_TYPE((accessor: string) => process.argv[2] === accessor, "k2genmity", "Dist_K2genmity", "Dist", "Unused_Deb")
 
@@ -200,15 +200,8 @@ const EntryPoint = async (index: number, ipaName: string) => {
         const M: Main = new Main('Tweak', 'Required Tweaks');
         await M.Main(async (): Promise<void> => {
             await new Inject("Tweak", "all Required Tweaks", true, 'ls Enmity_Patches/Required').run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`echo $PWD`, (stderr, stdout) => {
-                    console.log({ stderr, stdout})
-                })
-                await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Required/${patchName} -v -U & wait $!`, (stderr, stdout) => {
-                    console.log({ stderr, stdout })
-                })
-                await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}.ipa`, (stderr, stdout) => {
-                    console.log({ stderr, stdout })
-                })
+                await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Required/${patchName} -v -U & wait $!`)
+                await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}.ipa`)
             })
         })
 
@@ -232,12 +225,8 @@ const EntryPoint = async (index: number, ipaName: string) => {
         const M: Main = new Main('Tweak', "Optional Variations");
         await M.Main(async (): Promise<void> => {
             await new Inject("Flowercord", 'Flowercord', false, "ls Enmity_Patches/Optional").run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Optional/${patchName} -v -U & wait $!`, (stderr, stdout) => {
-                    console.log({ stderr, stdout })
-                });
-                await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}+Flowercord.ipa`, (stderr, stdout) => {
-                    console.log({ stderr, stdout })
-                })
+                await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Optional/${patchName} -v -U & wait $!`);
+                await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}+Flowercord.ipa`)
             })
         })
 
