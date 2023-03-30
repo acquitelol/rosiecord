@@ -33,10 +33,10 @@ class Shell {
         })
     }
 
-    static async run(command: string = 'ls', after = (stderr: ExecException | null, stdout: string): void => {}): Promise<string> {
+    static async run(command: string = 'ls', after?: (stderr: ExecException | null, stdout: string) => any): Promise<string> {
         return await new Promise((resolve): void => {
             exec(command, (stderr, stdout): void => {
-                after(stderr, stdout);
+                after?.(stderr, stdout);
                 resolve(stdout);
             });
         });

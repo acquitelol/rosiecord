@@ -24,10 +24,10 @@ class Shell {
             resolve(text.toString());
         });
     }
-    static async run(command = 'ls', after = (stderr, stdout) => { }) {
+    static async run(command = 'ls', after) {
         return await new Promise((resolve) => {
             exec(command, (stderr, stdout) => {
-                after(stderr, stdout);
+                after === null || after === void 0 ? void 0 : after(stderr, stdout);
                 resolve(stdout);
             });
         });
