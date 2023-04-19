@@ -27,6 +27,10 @@ class Shell {
     static async run(command = 'ls', after) {
         return await new Promise((resolve) => {
             exec(command, (stderr, stdout) => {
+                if (after instanceof Promise) {
+                    after(stderr, stdout).then(() => resolve(stdout));
+                    return;
+                }
                 after === null || after === void 0 ? void 0 : after(stderr, stdout);
                 resolve(stdout);
             });
@@ -156,7 +160,7 @@ const EntryPoint = async (index, ipaName) => {
             const M = new Main('Tweak', 'Required Tweaks');
             await M.Main(async () => {
                 await new Inject("Tweak", "all Required Tweaks", true, 'ls Enmity_Patches/Required').run(M, async (ipaName, patchName) => {
-                    await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Required/${patchName} -v -U & wait $!`);
+                    await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f Enmity_Patches/Required/${patchName} -v & wait $!`);
                     await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}.ipa`);
                 });
             });
@@ -179,7 +183,7 @@ const EntryPoint = async (index, ipaName) => {
             const M = new Main('Tweak', "Optional Variations");
             await M.Main(async () => {
                 await new Inject("Flowercord", 'Flowercord', false, "ls Enmity_Patches/Optional").run(M, async (ipaName, patchName) => {
-                    await Shell.run(`Azule/azule -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Optional/${patchName} -v -U & wait $!`);
+                    await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f Enmity_Patches/Optional/${patchName} -v & wait $!`);
                     await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}+Flowercord.ipa`);
                 });
             });
@@ -217,6 +221,9 @@ class Initialiser extends States {
             : await (async () => {
                 await Shell.write(`${this.PENDING}${this.PINK} Installing ${this.CYAN}"Azule"${this.PINK}. ${this.BLUE}This may take a while...${this.ENDC}\r`);
                 await Shell.run(`git clone https://github.com/Al4ise/Azule/ & wait $!`, async (stderr, stdout) => {
+                    process.chdir("Azule");
+                    await Shell.run(`git checkout 27c02b415cff15b1c131a0e95bcc2438023f86da`);
+                    process.chdir('../');
                     await Shell.write(stderr
                         ? `${this.FAILURE} An error occured while installing ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.RED}.${this.ENDC}\n`
                         : `${this.SUCCESS} Successfully installed ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./${this.PINK}"${this.GREEN}.${this.ENDC}\n`);
@@ -315,6 +322,22 @@ const main = async () => {
         await D.logDivider();
         // await new Promise((resolve) => setTimeout(() => resolve(), 2000));
     }
+    // await Shell.write(`${S.PENDING}${M.CYAN} Signing ${M.PINK}\"Discord\"${M.CYAN} and signing ${M.PINK}\"Frameworks\"${M.CYAN}.${M.ENDC}\r`);
+    // const errors: any[] = [];
+    // for (const Ipa of await M.get(`ls ${GLOBAL_DIST_DIR}`)) {
+    //     await Shell.run(`unzip -qq -o ${GLOBAL_DIST_DIR}/${Ipa}`, (stderr) => stderr && errors.push(stderr));
+    //     await Shell.run(`ldid -S Payload/Discord.app/Discord`, (stderr) => stderr && errors.push(stderr))
+    //     for (const Framework of await M.get('ls Payload/Discord.app/Frameworks/*.dylib')) {
+    //         await Shell.run(`ldid -S ${Framework}`, (stderr) => stderr && errors.push(stderr))
+    //     }
+    //     await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/${Ipa} Payload & wait $!`)
+    //     await Shell.runSilently(`rm -rf Payload & wait $!`)
+    // }
+    // Shell.write(errors.length > 0
+    //     ? `${S.FAILURE} An error occurred while signing ${M.PINK}\"Discord and Frameworks\"${M.RED}.${M.ENDC}\n`
+    //     : `${S.SUCCESS} Successfully signed ${M.PINK}\"Discord\"${M.GREEN} and signed ${M.PINK}\"Frameworks\"${M.GREEN}.${M.ENDC}\n`
+    // )
+    // errors.length > 0 && Shell.write(errors);
     const END_TIME = Date.now();
     await Shell.write(`${S.SUCCESS} Successfully built ${M.PINK}Rosiecord${M.GREEN} in ${M.CYAN}${(END_TIME - START_TIME) / 1000} seconds${M.GREEN}.`);
 };
