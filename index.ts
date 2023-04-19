@@ -36,11 +36,6 @@ class Shell {
     static async run(command: string = 'ls', after?: (stderr: ExecException | null, stdout: string) => any): Promise<string> {
         return await new Promise((resolve): void => {
             exec(command, (stderr, stdout): void => {
-                if (after instanceof Promise) {
-                    after(stderr, stdout).then(() => resolve(stdout));
-                    return;
-                }
-
                 after?.(stderr, stdout);
                 resolve(stdout);
             });
