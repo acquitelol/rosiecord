@@ -156,7 +156,7 @@ const EntryPoint = async (index, ipaName) => {
             const M = new Main('Tweak', 'Required Tweaks');
             await M.Main(async () => {
                 await new Inject("Tweak", "all Required Tweaks", true, 'ls Enmity_Patches/Required').run(M, async (ipaName, patchName) => {
-                    await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f Enmity_Patches/Required/${patchName} -v & wait $!`);
+                    await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Required/${patchName} -v & wait $!`);
                     await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}.ipa`);
                 });
             });
@@ -179,7 +179,7 @@ const EntryPoint = async (index, ipaName) => {
             const M = new Main('Tweak', "Optional Variations");
             await M.Main(async () => {
                 await new Inject("Flowercord", 'Flowercord', false, "ls Enmity_Patches/Optional").run(M, async (ipaName, patchName) => {
-                    await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f Enmity_Patches/Optional/${patchName} -v & wait $!`);
+                    await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Optional/${patchName} -v & wait $!`);
                     await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}+Flowercord.ipa`);
                 });
             });
@@ -217,9 +217,6 @@ class Initialiser extends States {
             : await (async () => {
                 await Shell.write(`${this.PENDING}${this.PINK} Installing ${this.CYAN}"Azule"${this.PINK}. ${this.BLUE}This may take a while...${this.ENDC}\r`);
                 await Shell.run(`git clone https://github.com/Al4ise/Azule/ & wait $!`, async (stderr, stdout) => {
-                    process.chdir("Azule");
-                    await Shell.run(`git checkout 27c02b415cff15b1c131a0e95bcc2438023f86da`);
-                    process.chdir('../');
                     await Shell.write(stderr
                         ? `${this.FAILURE} An error occured while installing ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.RED}.${this.ENDC}\n`
                         : `${this.SUCCESS} Successfully installed ${this.PINK}"${this.CYAN}Azule${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./${this.PINK}"${this.GREEN}.${this.ENDC}\n`);
