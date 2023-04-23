@@ -1,5 +1,5 @@
 export default {
-    IPA_FETCH_LINK: "https://cdn.discordapp.com/attachments/1011346757214543875/1099119312733745263/Discord_176.0_42956.ipa",
+    IPA_FETCH_LINK: "https://cdn.discordapp.com/attachments/1011346757214543875/1099721453919809707/Discord_177.0_43014.ipa",
     ENMITY_LOADER: "Enmity.Debug.deb",
     GET_PATCH_TYPE(predicate, inputArg, truePredicate, falsePredicate, fallback) {
         const out = predicate(inputArg);
