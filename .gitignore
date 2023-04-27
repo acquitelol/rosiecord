@@ -1,14 +1,14 @@
 Dist/*
 Dist_K2genmity/*
 Azule
-Tweaks/Flowercord/.theos
-Tweaks/Flowercord/.vscode
+.theos
+.vscode
 node_modules
 !Ipas/.gitkeep
 Ipas/*
-Fonts/woff2/tmp
 Fonts/woff2/Cute
 Fonts/ttf/Cute
 Payload
 .DS_STORE
 __MACOSX
+eggcrypt.deb
