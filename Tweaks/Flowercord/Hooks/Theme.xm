@@ -3,9 +3,10 @@
 // Copyright (c) 2021 ren7995. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #include <objc/runtime.h>
 #include <substrate.h>
+
+#import <UIKit/UIKit.h>
 #import <SpringBoard/SpringBoard.h>
 
 #import "Discord.h"
@@ -43,18 +44,6 @@ static void loadDynamicColors() {
     self.layer.cornerRadius = profile_radius;
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [UIView animateWithDuration:0.3 animations:^{
-        self.alpha = 0.5;
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.3 animations:^{
-            self.alpha = 1.0;
-        }];
-    }];
-    
-    %orig;
-}
-
 %end
 
 // Message cell background (rounded)
@@ -66,7 +55,7 @@ static void loadDynamicColors() {
 }
 
 - (void)didMoveToSuperview {
-    if(!self.customBackgroundView) {
+    if (!self.customBackgroundView) {
         self.customBackgroundView = [[UIView alloc] init];
     }
 

@@ -255,14 +255,21 @@ class Initialiser extends States {
         process.chdir(`Tweaks/${tweakName}`);
 
         await Shell.runSilently(`rm -rf packages`);
-        await Shell.run(cmd, async (stderr) => {
+        await Shell.run(cmd, async (stderr, stdout) => {
             await Shell.write(stderr
                 ? `${this.FAILURE} An error occured while packaging ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.RED}.${this.ENDC}\n`
-                : `${this.SUCCESS} Successfully installed ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.GREEN}.${this.ENDC}\n`)
+                : `${this.SUCCESS} Successfully packaged ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}".${this.GREEN} Moving into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.GREEN}...${this.ENDC}\n`)
         });
 
-        await Shell.runSilently(`mv packages/$(find packages "*.deb") ../Enmity_Patches/${permanentability}/${tweakName}.deb`);
-        process.chdir('../..');
+        process.chdir("packages");
+
+        await Shell.write(`${this.PENDING}${this.PINK} Moving ${this.CYAN}"${this.PINK}${tweakName}${this.CYAN}"${this.PINK} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.PINK}...${this.ENDC}\r`)
+        await Shell.run(`mv $(find . -name "*.deb") ../../../Enmity_Patches/${permanentability}/${tweakName}.deb`, async (stderr, stdout) => {
+            await Shell.write(stderr
+                ? `${this.FAILURE} An error occured while moving ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.RED} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.RED}.${this.ENDC}\n`
+                : `${this.SUCCESS} Successfully moved ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.GREEN}.${this.ENDC}\n`)
+        });
+        process.chdir('../../..');
     }
 
     async InitializeAzule(): Promise<void> {
@@ -400,25 +407,25 @@ const main = async (): Promise<void> => {
         // await new Promise((resolve) => setTimeout(() => resolve(), 2000));
     }
 
-    await Shell.write(`${S.PENDING}${M.CYAN} Signing ${M.PINK}\"Discord\"${M.CYAN} and signing ${M.PINK}\"Frameworks\"${M.CYAN}.${M.ENDC}\r`);
-    const errors: any[] = [];
-    for (const Ipa of await M.get(`ls ${GLOBAL_DIST_DIR}`)) {
+    // await Shell.write(`${S.PENDING}${M.CYAN} Signing ${M.PINK}\"Discord\"${M.CYAN} and signing ${M.PINK}\"Frameworks\"${M.CYAN}.${M.ENDC}\r`);
+    // const errors: any[] = [];
+    // for (const Ipa of await M.get(`ls ${GLOBAL_DIST_DIR}`)) {
         
-        await Shell.run(`unzip -qq -o ${GLOBAL_DIST_DIR}/${Ipa}`, (stderr) => stderr && errors.push(stderr));
-        await Shell.run(`ldid -S Payload/Discord.app/Discord`, (stderr) => stderr && errors.push(stderr))
+    //     await Shell.run(`unzip -qq -o ${GLOBAL_DIST_DIR}/${Ipa}`, (stderr) => stderr && errors.push(stderr));
+    //     await Shell.run(`ldid -S Payload/Discord.app/Discord`, (stderr) => stderr && errors.push(stderr))
 
-        for (const Framework of await M.get('ls Payload/Discord.app/Frameworks/*.dylib')) {
-            await Shell.run(`ldid -S ${Framework}`, (stderr) => stderr && errors.push(stderr))
-        }
+    //     for (const Framework of await M.get('ls Payload/Discord.app/Frameworks/*.dylib')) {
+    //         await Shell.run(`ldid -S ${Framework}`, (stderr) => stderr && errors.push(stderr))
+    //     }
 
-        await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/${Ipa} Payload & wait $!`)
-        await Shell.runSilently(`rm -rf Payload & wait $!`)
-    }
+    //     await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/${Ipa} Payload & wait $!`)
+    //     await Shell.runSilently(`rm -rf Payload & wait $!`)
+    // }
 
-    Shell.write(errors.length > 0
-        ? `${S.FAILURE} An error occurred while signing ${M.PINK}\"Discord and Frameworks\"${M.RED}.${M.ENDC}\n`
-        : `${S.SUCCESS} Successfully signed ${M.PINK}\"Discord\"${M.GREEN} and signed ${M.PINK}\"Frameworks\"${M.GREEN}.${M.ENDC}\n`
-    )
+    // Shell.write(errors.length > 0
+    //     ? `${S.FAILURE} An error occurred while signing ${M.PINK}\"Discord and Frameworks\"${M.RED}.${M.ENDC}\n`
+    //     : `${S.SUCCESS} Successfully signed ${M.PINK}\"Discord\"${M.GREEN} and signed ${M.PINK}\"Frameworks\"${M.GREEN}.${M.ENDC}\n`
+    // )
 
     // errors.length > 0 && Shell.write(errors);
 
