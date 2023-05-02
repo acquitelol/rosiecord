@@ -5,7 +5,6 @@
 * Required Dependencies: PLUTIL, LOCAL_DIRS[Fonts, Icons, Enmity_Patches{Required, Optional}], AZULE
 */
 
-
 import { exec, ExecException } from 'child_process';
 import fs from 'fs';
 import Constants from './constants.js';
@@ -407,25 +406,25 @@ const main = async (): Promise<void> => {
         // await new Promise((resolve) => setTimeout(() => resolve(), 2000));
     }
 
-    // await Shell.write(`${S.PENDING}${M.CYAN} Signing ${M.PINK}\"Discord\"${M.CYAN} and signing ${M.PINK}\"Frameworks\"${M.CYAN}.${M.ENDC}\r`);
-    // const errors: any[] = [];
-    // for (const Ipa of await M.get(`ls ${GLOBAL_DIST_DIR}`)) {
+    await Shell.write(`${S.PENDING}${M.CYAN} Signing ${M.PINK}\"Discord\"${M.CYAN} and signing ${M.PINK}\"Frameworks\"${M.CYAN}.${M.ENDC}\r`);
+    const errors: any[] = [];
+    for (const Ipa of await M.get(`ls ${GLOBAL_DIST_DIR}`)) {
         
-    //     await Shell.run(`unzip -qq -o ${GLOBAL_DIST_DIR}/${Ipa}`, (stderr) => stderr && errors.push(stderr));
-    //     await Shell.run(`ldid -S Payload/Discord.app/Discord`, (stderr) => stderr && errors.push(stderr))
+        await Shell.run(`unzip -qq -o ${GLOBAL_DIST_DIR}/${Ipa}`, (stderr) => stderr && errors.push(stderr));
+        await Shell.run(`ldid -S Payload/Discord.app/Discord`, (stderr) => stderr && errors.push(stderr))
 
-    //     for (const Framework of await M.get('ls Payload/Discord.app/Frameworks/*.dylib')) {
-    //         await Shell.run(`ldid -S ${Framework}`, (stderr) => stderr && errors.push(stderr))
-    //     }
+        for (const Framework of await M.get('ls Payload/Discord.app/Frameworks/*.dylib')) {
+            await Shell.run(`ldid -S ${Framework}`, (stderr) => stderr && errors.push(stderr))
+        }
 
-    //     await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/${Ipa} Payload & wait $!`)
-    //     await Shell.runSilently(`rm -rf Payload & wait $!`)
-    // }
+        await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/${Ipa} Payload & wait $!`)
+        await Shell.runSilently(`rm -rf Payload & wait $!`)
+    }
 
-    // Shell.write(errors.length > 0
-    //     ? `${S.FAILURE} An error occurred while signing ${M.PINK}\"Discord and Frameworks\"${M.RED}.${M.ENDC}\n`
-    //     : `${S.SUCCESS} Successfully signed ${M.PINK}\"Discord\"${M.GREEN} and signed ${M.PINK}\"Frameworks\"${M.GREEN}.${M.ENDC}\n`
-    // )
+    Shell.write(errors.length > 0
+        ? `${S.FAILURE} An error occurred while signing ${M.PINK}\"Discord and Frameworks\"${M.RED}.${M.ENDC}\n`
+        : `${S.SUCCESS} Successfully signed ${M.PINK}\"Discord\"${M.GREEN} and signed ${M.PINK}\"Frameworks\"${M.GREEN}.${M.ENDC}\n`
+    )
 
     // errors.length > 0 && Shell.write(errors);
 
