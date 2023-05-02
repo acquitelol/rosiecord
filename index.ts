@@ -262,7 +262,7 @@ class Initialiser extends States {
                 errored = stderr;
         });
 
-        if (errored) return process.chdir("../../..");
+        if (errored) return process.chdir("../..");
         process.chdir("packages");
 
         await Shell.write(`${this.PENDING}${this.PINK} Moving ${this.CYAN}"${this.PINK}${tweakName}${this.CYAN}"${this.PINK} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.PINK}...${this.ENDC}\r`)

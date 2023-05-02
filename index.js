@@ -211,7 +211,7 @@ class Initialiser extends States {
             errored = stderr;
         });
         if (errored)
-            return process.chdir("../../..");
+            return process.chdir("../..");
         process.chdir("packages");
         await Shell.write(`${this.PENDING}${this.PINK} Moving ${this.CYAN}"${this.PINK}${tweakName}${this.CYAN}"${this.PINK} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.PINK}...${this.ENDC}\r`);
         await Shell.run(`mv $(find . -name "*.deb") ../../../Enmity_Patches/${permanentability}/${tweakName}.deb`, async (stderr, stdout) => {
@@ -317,7 +317,7 @@ const main = async () => {
         });
     }
     await D.logDivider();
-    await Init.PackageTweak("Flowercord", "gmake package", "Optional");
+    await Init.PackageTweak("Flowercord", "gmaadske pssadsackage", "Optional");
     await Init.InitializeAzule();
     await D.logDivider();
     for (let i = 0; i <= 3; i++) {
