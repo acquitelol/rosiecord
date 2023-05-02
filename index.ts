@@ -253,13 +253,16 @@ class Initialiser extends States {
         await Shell.write(`${this.PENDING}${this.PINK} Packaging ${this.CYAN}"${this.PINK}${tweakName}${this.CYAN}"${this.PINK}. ${this.BLUE}This may take a while...${this.ENDC}\r`)
         process.chdir(`Tweaks/${tweakName}`);
 
+        let errored;
         await Shell.runSilently(`rm -rf packages`);
         await Shell.run(cmd, async (stderr, stdout) => {
             await Shell.write(stderr
                 ? `${this.FAILURE} An error occured while packaging ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.RED}.${this.ENDC}\n`
                 : `${this.SUCCESS} Successfully packaged ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}".${this.GREEN} Moving into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.GREEN}...${this.ENDC}\n`)
+                errored = stderr;
         });
 
+        if (errored) return process.chdir("../../..");
         process.chdir("packages");
 
         await Shell.write(`${this.PENDING}${this.PINK} Moving ${this.CYAN}"${this.PINK}${tweakName}${this.CYAN}"${this.PINK} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.PINK}...${this.ENDC}\r`)
