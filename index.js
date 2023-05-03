@@ -317,7 +317,7 @@ const main = async () => {
         });
     }
     await D.logDivider();
-    await Init.PackageTweak("Flowercord", "gmaadske pssadsackage", "Optional");
+    await Init.PackageTweak("Flowercord", "gmake package", "Optional");
     await Init.InitializeAzule();
     await D.logDivider();
     for (let i = 0; i <= 3; i++) {
