@@ -32,7 +32,7 @@ Rosiecord_[[FontName]](https://github.com/acquitelol/rosiecord/tree/master/Fonts
 
 #### It adds chat bubbles to messages and makes profile pictures in the chat area square. The following is a screenshot showing this
 
-<img width="350" alt="Default with Flowercord" src="Rosiecord_Mocks/Default_Flowercord.png">
+<img width="350" alt="Default with Flowercord" src="Mocks/Default_Flowercord.png">
 
 ### Icon Pack Screenshots
 
@@ -44,24 +44,24 @@ Rosiecord_[[FontName]](https://github.com/acquitelol/rosiecord/tree/master/Fonts
 
 (The default normie look)
 <div style='display: flex;' align='left'>
-  <img width="350" alt="Default without Flowercord" src="Rosiecord_Mocks/Default.png">
-  <img width="350" alt="Default with Flowercord" src="Rosiecord_Mocks/Default_Flowercord.png">
+  <img width="350" alt="Default without Flowercord" src="Mocks/Default.png">
+  <img width="350" alt="Default with Flowercord" src="Mocks/Default_Flowercord.png">
 </div>
 
 ## [Plumpy](https://github.com/acquitelol/rosiecord/tree/master/Packs/Plumpy) - [Install](https://github.com/acquitelol/rosiecord/releases/latest)
 
 (Probably the most liked pack, constantly updated with new icons by another Rosie :3)
 <div style='display: flex;' align='left'>
-  <img width="350" alt="Plumpy without Flowercord" src="Rosiecord_Mocks/Plumpy.png">
-  <img width="350" alt="Plumpy with Flowercord" src="Rosiecord_Mocks/Plumpy_Flowercord.png">
+  <img width="350" alt="Plumpy without Flowercord" src="Mocks/Plumpy.png">
+  <img width="350" alt="Plumpy with Flowercord" src="Mocks/Plumpy_Flowercord.png">
 </div>
 
 ## [Iconsax](https://github.com/acquitelol/rosiecord/tree/master/Packs/Iconsax) - [Install](https://github.com/acquitelol/rosiecord/releases/latest)
 
 (Uses some icons from Plumpy, given by Flower :3, includes quite modern icons.)
 <div style='display: flex;' align='left'>
-  <img width="350" alt="Iconsax without Flowercord" src="Rosiecord_Mocks/Iconsax.png">
-  <img width="350" alt="Iconsax with Flowercord" src="Rosiecord_Mocks/Iconsax_Flowercord.png">
+  <img width="350" alt="Iconsax without Flowercord" src="Mocks/Iconsax.png">
+  <img width="350" alt="Iconsax with Flowercord" src="Mocks/Iconsax_Flowercord.png">
 </div>
 
 Created with <3 By **Rosie** in TypeScript :3
