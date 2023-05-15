@@ -2,7 +2,7 @@
 * -~-~-~ Main Rosiecord Patch Script -~-~-~
 * Build to Patch Enmity, Icons, Fonts, and Other Tweaks into the Base Discord IPA.
 * Created by Rosie "Acquite" on Thursday 22st December 2022.
-* Required Dependencies: PLUTIL, LOCAL_DIRS[Fonts, Icons, Enmity_Patches{Required, Optional}], AZULE
+* Required Dependencies: PLUTIL, LOCAL_DIRS[Fonts, Icons, Patches{Required, Optional}], AZULE
 */
 
 import { exec, ExecException } from 'child_process';
@@ -198,8 +198,8 @@ const EntryPoint = async (index: number, ipaName: string) => {
     case 1: {
         const M: Main = new Main('Tweak', 'Required Tweaks');
         await M.Main(async (): Promise<void> => {
-            await new Inject("Tweak", "all Required Tweaks", true, 'ls Enmity_Patches/Required').run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Required/${patchName} -v & wait $!`)
+            await new Inject("Tweak", "all Required Tweaks", true, 'ls Patches/Required').run(M, async (ipaName: string, patchName: string) => {
+                await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Patches/Required/${patchName} -v & wait $!`)
                 await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}.ipa`)
             })
         })
@@ -223,8 +223,8 @@ const EntryPoint = async (index: number, ipaName: string) => {
     case 3: {
         const M: Main = new Main('Tweak', "Optional Variations");
         await M.Main(async (): Promise<void> => {
-            await new Inject("Flowercord", 'Flowercord', false, "ls Enmity_Patches/Optional").run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Enmity_Patches/Optional/${patchName} -v & wait $!`);
+            await new Inject("Flowercord", 'Flowercord', false, "ls Patches/Optional").run(M, async (ipaName: string, patchName: string) => {
+                await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Patches/Optional/${patchName} -v & wait $!`);
                 await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}+Flowercord.ipa`)
             })
         })
@@ -258,18 +258,18 @@ class Initialiser extends States {
         await Shell.run(cmd, async (stderr, stdout) => {
             await Shell.write(stderr
                 ? `${this.FAILURE} An error occured while packaging ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.RED}.${this.ENDC}\n`
-                : `${this.SUCCESS} Successfully packaged ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}".${this.GREEN} Moving into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.GREEN}...${this.ENDC}\n`)
+                : `${this.SUCCESS} Successfully packaged ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}".${this.GREEN} Moving into ${this.PINK}"${this.CYAN}./Patches/${permanentability}/${this.PINK}"${this.GREEN}...${this.ENDC}\n`)
                 errored = stderr;
         });
 
         if (errored) return process.chdir("../..");
         process.chdir("packages");
 
-        await Shell.write(`${this.PENDING}${this.PINK} Moving ${this.CYAN}"${this.PINK}${tweakName}${this.CYAN}"${this.PINK} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.PINK}...${this.ENDC}\r`)
-        await Shell.run(`mv $(find . -name "*.deb") ../../../Enmity_Patches/${permanentability}/${tweakName}.deb`, async (stderr, stdout) => {
+        await Shell.write(`${this.PENDING}${this.PINK} Moving ${this.CYAN}"${this.PINK}${tweakName}${this.CYAN}"${this.PINK} into ${this.PINK}"${this.CYAN}./Patches/${permanentability}/${this.PINK}"${this.PINK}...${this.ENDC}\r`)
+        await Shell.run(`mv $(find . -name "*.deb") ../../../Patches/${permanentability}/${tweakName}.deb`, async (stderr, stdout) => {
             await Shell.write(stderr
-                ? `${this.FAILURE} An error occured while moving ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.RED} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.RED}.${this.ENDC}\n`
-                : `${this.SUCCESS} Successfully moved ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./Enmity_Patches/${permanentability}/${this.PINK}"${this.GREEN}.${this.ENDC}\n`)
+                ? `${this.FAILURE} An error occured while moving ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.RED} into ${this.PINK}"${this.CYAN}./Patches/${permanentability}/${this.PINK}"${this.RED}.${this.ENDC}\n`
+                : `${this.SUCCESS} Successfully moved ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.GREEN} into ${this.PINK}"${this.CYAN}./Patches/${permanentability}/${this.PINK}"${this.GREEN}.${this.ENDC}\n`)
         });
         process.chdir('../../..');
     }
