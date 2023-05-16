@@ -14,7 +14,7 @@
 static UIColor *messageCellLightColor;
 static UIColor *messageCellDarkColor;
 static UIColor *messageCellDynamicColor;
-static float profile_radius = 12.0F;
+// static float profile_radius = 12.0F;
 static float chat_area_radius = 10.0F;
 
 static BOOL isDiscordDarkMode() {
@@ -37,14 +37,14 @@ static void loadDynamicColors() {
 }
 
 // Avatar view custom corner radius
-%hook DCDAvatarView
+// %hook DCDAvatarView
 
-- (void)layoutSubviews {
-    %orig();
-    self.layer.cornerRadius = profile_radius;
-}
+// - (void)layoutSubviews {
+//     %orig();
+//     self.layer.cornerRadius = profile_radius;
+// }
 
-%end
+// %end
 
 // Message cell background (rounded)
 %hook DCDMessageTableViewCell
