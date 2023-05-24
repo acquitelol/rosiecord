@@ -1,5 +1,5 @@
 export default {
-    IPA_FETCH_LINK: "https://cdn.discordapp.com/attachments/1085420899907412028/1110486573201510410/Discord_181.0_44377.ipa",
+    IPA_FETCH_LINK: "https://cdn.discordapp.com/attachments/1015971724895989780/1110843767889592340/Discord_181.0_44440.ipa",
     ENMITY_LOADER: "Enmity.Debug.deb",
     GET_PATCH_TYPE<T, V>(predicate: Function, inputArg: V, truePredicate: T, falsePredicate: T, fallback: T): T {
         const out: boolean = predicate(inputArg);
