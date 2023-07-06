@@ -7,8 +7,8 @@
 #import <UIKit/UIKit.h>
 #define NSLog(fmt, ... ) NSLog((@"[Flowercord] " fmt), ##__VA_ARGS__);
 
-// @interface DCDAvatarView : UIView
-// @end
+@interface DCDAvatarView : UIView
+@end
 
 @interface DCDMessageTableViewCell : UIView
 @property (nonatomic, strong) UIView *customBackgroundView;

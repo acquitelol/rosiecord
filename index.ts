@@ -1,59 +1,13 @@
 /**
 * -~-~-~ Main Rosiecord Patch Script -~-~-~
 * Build to Patch Enmity, Icons, Fonts, and Other Tweaks into the Base Discord IPA.
-* Created by Rosie "Acquite" on Thursday 22st December 2022.
-* Required Dependencies: PLUTIL, LOCAL_DIRS[Fonts, Icons, Patches{Required, Optional}], AZULE
+* Created by Rosie "Acquite" on Thursday 22nd December 2022.
+* Last updated by Rosie "Acquite" on Thursday 6th July 2023.
+* Required Dependencies: plutil, local-dirs[Fonts, Packs, Icons, Patches{Required, Optional}], Azule, Theos, NodeJS (run `npm i`)
 */
 
-import { exec, ExecException } from 'child_process';
 import fs from 'fs';
-import Constants from './constants.js';
-const { Colors, IPA_FETCH_LINK, GET_PATCH_TYPE } = Constants
-
-const GLOBAL_DIST_DIR = GET_PATCH_TYPE((accessor: string) => process.argv[2] === accessor, "k2genmity", "Dist_K2genmity", "Dist", "Unused_Deb")
-
-class States extends Colors {
-    PENDING;
-    FAILURE;
-    SUCCESS;
-    constructor() {
-        super();
-        this.PENDING = `${this.PINK}[${this.CYAN}*${this.PINK}]${this.ENDC}`
-        this.FAILURE = `${this.PINK}[${this.CYAN}-${this.PINK}]${this.RED}`
-        this.SUCCESS = `${this.PINK}[${this.CYAN}+${this.PINK}]${this.GREEN}`
-    }
-}
-
-class Shell {
-    static async write(text: string | any): Promise<string> {
-        return await new Promise((resolve): void => {
-            process.stdout.write(text.toString());
-            resolve(text.toString());
-        })
-    }
-
-    static async run(command: string = 'ls', after?: (stderr: ExecException | null, stdout: string) => any): Promise<string> {
-        return await new Promise((resolve): void => {
-            exec(command, (stderr, stdout): void => {
-                after?.(stderr, stdout);
-                resolve(stdout);
-            });
-        });
-    }
-
-    static async runSilently(command: string = 'ls', after = (stderr: ExecException | null, stdout: string): void => {}): Promise<string> {
-        return await new Promise((resolve): void => {
-            const finalCommand: string = command.includes('&')
-                ? command.split('&')[0] + '> /dev/null ' + "&" + command.split('&')[1]
-                : command + ' > /dev/null'
-
-            exec(finalCommand, (stderr, stdout): void => {
-                after(stderr, stdout);
-                resolve(stdout);
-            });
-        });
-    }
-}
+import { Colors, Shell, States, Constants, Divider } from './constants.js';
 
 class Main extends Colors {
     type: string;
@@ -138,7 +92,7 @@ class Inject extends Colors {
                 : (item !== "K2genmity.Development.deb")
         })
 
-        const stdoutIpas = await M.get(`ls ${GLOBAL_DIST_DIR}`);
+        const stdoutIpas = await M.get(`ls Dist`);
         const tweakStates = requiredPatches.map(ipa => new State('pending', ipa))
         const S = new States();
 
@@ -175,20 +129,19 @@ const EntryPoint = async (index: number, ipaName: string) => {
                 await Shell.write(`${M.CYAN}Packaging the ${M.PINK}Base IPAs${M.CYAN}. If an ${M.PINK}IPA${M.CYAN} has been ${M.GREEN}successfully${M.CYAN} packaged, it will look like this: ${M.BLUE}"${M.PINK}[${M.CYAN}+${M.PINK}]${M.GREEN} Example IPA${M.BLUE}"\n`)
                 await M.logCurrentState(ipaStates, "Base Font IPAs")
 
-                await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/Rosiecord-${ipaName.split("_")[1]}_GGSans-Font.ipa Payload & wait $!`, async (stderr, _) => {
+                await Shell.runSilently(`zip -q -r Dist/Rosiecord-${ipaName.split("_")[1]}_GGSans-Font.ipa Payload & wait $!`, async (stderr, _) => {
                     ipaStates[0].state = stderr ? 'failure' : 'success'
                     await M.logCurrentState(ipaStates, 'Base Font IPAs')
                 });
                 await Shell.runSilently(`rm -rf Payload & wait $!`)
 
                 for (const Font of ipaList.filter(ipa => ipa !== 'GGSans')) {
-                    await Shell.runSilently(`unzip -qq -o ${GLOBAL_DIST_DIR}/Rosiecord-${ipaName.split("_")[1]}_GGSans-Font.ipa`);
+                    await Shell.runSilently(`unzip -qq -o Dist/Rosiecord-${ipaName.split("_")[1]}_GGSans-Font.ipa`);
                     await Shell.runSilently(`cp -rf Fonts/woff2/${Font}/* Payload/Discord.app/`)
-                    await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/Rosiecord-${ipaName.split("_")[1]}_${Font}-Font.ipa Payload & wait $!`)
-                    await Shell.runSilently(`rm -rf Payload & wait $!`)
+                    await Shell.runSilently(`zip -q -r Dist/Rosiecord-${ipaName.split("_")[1]}_${Font}-Font.ipa Payload & wait $!`)
+                    await Shell.runSilently(`rm -rf Payload & wait $!`);
 
-                    // @ts-ignore
-                    ipaStates.find(ipa => ipa.name === Font).state = 'success'
+                    (ipaStates.find(ipa => ipa.name === Font) ?? { state: null }).state = 'success'
                     await M.logCurrentState(ipaStates, "Base Font IPAs")
                 }
             })
@@ -199,8 +152,8 @@ const EntryPoint = async (index: number, ipaName: string) => {
         const M: Main = new Main('Tweak', 'Required Tweaks');
         await M.Main(async (): Promise<void> => {
             await new Inject("Tweak", "all Required Tweaks", true, 'ls Patches/Required').run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Patches/Required/${patchName} -v & wait $!`)
-                await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}.ipa`)
+                await Shell.run(`Azule/azule -U -i Dist/${ipaName}.ipa -o Dist -f $PWD/Patches/Required/${patchName} -v & wait $!`)
+                await Shell.run(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}.ipa`)
             })
         })
 
@@ -210,11 +163,11 @@ const EntryPoint = async (index: number, ipaName: string) => {
         const M: Main = new Main('Pack', 'Icon Packs');
         await M.Main(async (): Promise<void> => {
             await new Inject("Pack", "all Icon Packs", true, 'ls Packs').run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`unzip -qq -o ${GLOBAL_DIST_DIR}/${ipaName}.ipa`)
+                await Shell.run(`unzip -qq -o Dist/${ipaName}.ipa`)
                 await Shell.runSilently(`cp -rf Packs/${patchName}/Assets.car Payload/Discord.app/`)
                 await Shell.runSilently(`cp -rf Packs/${patchName}/* Payload/Discord.app/assets/`)
                 await Shell.runSilently(`rm -f Payload/Discord.app/assets/Assets.car`)
-                await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}_Icons.ipa Payload`)
+                await Shell.runSilently(`zip -q -r Dist/${ipaName}+${patchName}_Icons.ipa Payload`)
                 await Shell.runSilently(`rm -rf Payload`)
             })
         })
@@ -225,8 +178,8 @@ const EntryPoint = async (index: number, ipaName: string) => {
         const M: Main = new Main('Tweak', "Optional Variations");
         await M.Main(async (): Promise<void> => {
             await new Inject("Flowercord", 'Flowercord', false, "ls Patches/Optional").run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`Azule/azule -U -i ${GLOBAL_DIST_DIR}/${ipaName}.ipa -o ${GLOBAL_DIST_DIR} -f $PWD/Patches/Optional/${patchName} -v & wait $!`);
-                await Shell.run(`mv ${GLOBAL_DIST_DIR}/${ipaName}+${patchName}.ipa ${GLOBAL_DIST_DIR}/${ipaName}+Flowercord.ipa`)
+                await Shell.run(`Azule/azule -U -i Dist/${ipaName}.ipa -o Dist -f $PWD/Patches/Optional/${patchName} -v & wait $!`);
+                await Shell.run(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}+Flowercord.ipa`)
             })
         })
 
@@ -234,18 +187,6 @@ const EntryPoint = async (index: number, ipaName: string) => {
     }
     default:
         break
-    }
-}
-
-class Divider extends Colors {
-    length: number;
-    constructor(length: number) {
-        super();
-        this.length = length
-    }
-
-    async logDivider(): Promise<void> {
-        await Shell.write(`${this.PINK}-${this.CYAN}~`.repeat(this.length) + '\n' + this.ENDC)
     }
 }
 
@@ -299,8 +240,13 @@ const main = async (): Promise<void> => {
     const Init: Initialiser = new Initialiser();
 
     const { version } = M.load('./package.json');
-    const IPA_LINK = IPA_FETCH_LINK;
-    const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0] // Gets just the IPA Name, "Discord_158" or whatever
+    const IPA_LINK = Constants.IPA_FETCH_LINK;
+
+    /*
+     Gets just the IPA Name, "Discord_158" or whatever
+     Note that this is specifically only for the Discord content delivery network links and likely won't work for any other kind of link
+     */
+    const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0]
 
     await D.logDivider();
 
@@ -311,11 +257,11 @@ const main = async (): Promise<void> => {
 
     await D.logDivider();
 
-    await Shell.write(`${S.PENDING}${M.CYAN} Clearing existing ${M.PINK}\"IPAs\"${M.CYAN} in ${M.PINK}\"./${GLOBAL_DIST_DIR}\".${M.ENDC}\r`);
-    await Shell.runSilently(`mkdir -p ${GLOBAL_DIST_DIR}/ & wait $!; rm -rf ${GLOBAL_DIST_DIR}/* & wait $!; rm -rf Payload & wait $!`, (stderr) => {
+    await Shell.write(`${S.PENDING}${M.CYAN} Clearing existing ${M.PINK}\"IPAs\"${M.CYAN} in ${M.PINK}\"./Dist\".${M.ENDC}\r`);
+    await Shell.runSilently(`mkdir -p Dist/ & wait $!; rm -rf Dist/* & wait $!; rm -rf Payload & wait $!`, (stderr) => {
         Shell.write( stderr
-            ? `${S.FAILURE} An error occurred while clearing existing ${M.PINK}\"IPAs\" in ${M.PINK}\"./${GLOBAL_DIST_DIR}\".${M.ENDC}\n`
-            : `${S.SUCCESS} Successfully cleared existing ${M.PINK}\"IPAs\"${M.GREEN} in ${M.PINK}\"./${GLOBAL_DIST_DIR}\".${M.ENDC}\n`
+            ? `${S.FAILURE} An error occurred while clearing existing ${M.PINK}\"IPAs\" in ${M.PINK}\"./Dist\".${M.ENDC}\n`
+            : `${S.SUCCESS} Successfully cleared existing ${M.PINK}\"IPAs\"${M.GREEN} in ${M.PINK}\"./Dist\".${M.ENDC}\n`
         )
     });
 
@@ -400,6 +346,7 @@ const main = async (): Promise<void> => {
     
     await D.logDivider();
     await Init.PackageTweak("Flowercord", "gmake package", "Optional");
+    await Init.PackageTweak("SideloadFix", "gmake package", "Required");
     await Init.InitializeAzule();
 
     await D.logDivider();
@@ -412,16 +359,16 @@ const main = async (): Promise<void> => {
 
     // await Shell.write(`${S.PENDING}${M.CYAN} Signing ${M.PINK}\"Discord\"${M.CYAN} and signing ${M.PINK}\"Frameworks\"${M.CYAN}.${M.ENDC}\r`);
     // const errors: any[] = [];
-    // for (const Ipa of await M.get(`ls ${GLOBAL_DIST_DIR}`)) {
+    // for (const Ipa of await M.get(`ls Dist`)) {
         
-    //     await Shell.run(`unzip -qq -o ${GLOBAL_DIST_DIR}/${Ipa}`, (stderr) => stderr && errors.push(stderr));
+    //     await Shell.run(`unzip -qq -o Dist/${Ipa}`, (stderr) => stderr && errors.push(stderr));
     //     await Shell.run(`ldid -S Payload/Discord.app/Discord`, (stderr) => stderr && errors.push(stderr))
 
     //     for (const Framework of await M.get('ls Payload/Discord.app/Frameworks/*.dylib')) {
     //         await Shell.run(`ldid -S ${Framework}`, (stderr) => stderr && errors.push(stderr))
     //     }
 
-    //     await Shell.runSilently(`zip -q -r ${GLOBAL_DIST_DIR}/${Ipa} Payload & wait $!`)
+    //     await Shell.runSilently(`zip -q -r Dist/${Ipa} Payload & wait $!`)
     //     await Shell.runSilently(`rm -rf Payload & wait $!`)
     // }
 

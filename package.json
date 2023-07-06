@@ -1,6 +1,6 @@
 {
   "name": "rosiecord",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/acquitelol/rosiecord.git"
   },
-  "keywords": ["enmity", "rosiecord", "plumpycord"],
+  "keywords": ["enmity", "rosiecord", "plumpycord", "discord"],
   "author": "Rosie<3",
   "license": "ISC",
   "bugs": {

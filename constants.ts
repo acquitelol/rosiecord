@@ -1,23 +1,72 @@
-export default {
-    IPA_FETCH_LINK: "https://cdn.discordapp.com/attachments/986937851042213888/1120979519382245457/Discord_183.0.ipa",
-    ENMITY_LOADER: "Enmity.Debug.deb",
-    GET_PATCH_TYPE<T, V>(predicate: Function, inputArg: V, truePredicate: T, falsePredicate: T, fallback: T): T {
-        const out: boolean = predicate(inputArg);
-        switch(out) {
-            case true: return truePredicate
-            case false: return falsePredicate
-            default: return fallback;
-        }
-    },
-    FORMAT(someInput: string) {
-        return someInput.split(" ").map((e: string) => e[0].toUpperCase() + e.slice(1)).join(' ').replace(" ", "").replace(".deb", "")
-    },
-    Colors: class {
-        RED: string = '\x1b[91m';
-        GREEN: string = '\x1b[92m';
-        BLUE: string = '\x1b[94m';
-        PINK: string = '\x1b[95m';
-        CYAN: string = '\x1b[96m';
-        ENDC: string = '\x1b[0m';
+import { ExecException, exec } from "child_process";
+
+class Shell {
+    static async write(text: string | any): Promise<string> {
+        return await new Promise((resolve): void => {
+            process.stdout.write(text.toString());
+            resolve(text.toString());
+        })
+    }
+
+    static async run(command: string = 'ls', after?: (stderr: ExecException | null, stdout: string) => any): Promise<string> {
+        return await new Promise((resolve): void => {
+            exec(command, (stderr, stdout): void => {
+                after?.(stderr, stdout);
+                resolve(stdout);
+            });
+        });
+    }
+
+    static async runSilently(command: string = 'ls', after = (stderr: ExecException | null, stdout: string): void => {}): Promise<string> {
+        return await new Promise((resolve): void => {
+            const finalCommand: string = command.includes('&')
+                ? command.split('&')[0] + '> /dev/null ' + "&" + command.split('&')[1]
+                : command + ' > /dev/null'
+
+            exec(finalCommand, (stderr, stdout): void => {
+                after(stderr, stdout);
+                resolve(stdout);
+            });
+        });
+    }
+};
+
+class Colors {
+    RED: string = '\x1b[91m';
+    GREEN: string = '\x1b[92m';
+    BLUE: string = '\x1b[94m';
+    PINK: string = '\x1b[95m';
+    CYAN: string = '\x1b[96m';
+    ENDC: string = '\x1b[0m';
+};
+
+class Divider extends Colors {
+    length: number;
+    constructor(length: number) {
+        super();
+        this.length = length
+    }
+
+    async logDivider(): Promise<void> {
+        await Shell.write(`${this.PINK}-${this.CYAN}~`.repeat(this.length) + '\n' + this.ENDC)
+    }
+};
+
+class States extends Colors {
+    PENDING;
+    FAILURE;
+    SUCCESS;
+    constructor() {
+        super();
+        this.PENDING = `${this.PINK}[${this.CYAN}*${this.PINK}]${this.ENDC}`
+        this.FAILURE = `${this.PINK}[${this.CYAN}-${this.PINK}]${this.RED}`
+        this.SUCCESS = `${this.PINK}[${this.CYAN}+${this.PINK}]${this.GREEN}`
     }
 }
+
+class Constants {
+    static IPA_FETCH_LINK = "https://cdn.discordapp.com/attachments/1015971724895989780/1126409555711107072/Discord_186.0_46367.ipa";
+}
+
+export { Shell, Colors, Divider, States, Constants };
+

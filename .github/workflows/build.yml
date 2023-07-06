@@ -15,20 +15,20 @@ jobs:
         run: brew install coreutils ldid
 
       - name: Run Main Node Script to Patch Rosiecord
-        id: node_sh
+        id: build
         run: node ./index.js
         
       - name: Retrieve version
+        id: version
         run: |
           cd ./ipas
-          echo "::set-output name=DISCORD_VERSION::$(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)"   
-        id: version
+          echo "__DISCORD_VERSION=$(ls | grep Discord | sed -e s/[^0-9.]//g | sed -e s/[/.+?\./]//g)" >> $GITHUB_OUTPUT  
 
       - name: Create release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          automatic_release_tag: rosiecord_${{ steps.version.outputs.DISCORD_VERSION }}
-          title: Rosiecord ${{ steps.version.outputs.DISCORD_VERSION }}
+          automatic_release_tag: rosiecord_${{ steps.version.outputs.__DISCORD_VERSION }}
+          title: Rosiecord ${{ steps.version.outputs.__DISCORD_VERSION }}
           files: Dist/*.ipa
