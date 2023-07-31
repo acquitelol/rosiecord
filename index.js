@@ -198,7 +198,11 @@ const main = async () => {
     const Init = new Initialiser();
     const { version } = M.load('./package.json');
     const IPA_LINK = Constants.IPA_FETCH_LINK;
-    const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0]; // Gets just the IPA Name, "Discord_158" or whatever
+    /*
+     Gets just the IPA Name, "Discord_158" or whatever
+     Note that this is specifically only for the Discord content delivery network links and likely won't work for any other kind of link
+     */
+    const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0];
     await D.logDivider();
     await Shell.write(`${M.PINK} █▀█ █▀█ █▀ █ █▀▀ █▀▀ █▀█ █▀█ █▀▄\n${M.CYAN} █▀▄ █▄█ ▄█ █ ██▄ █▄▄ █▄█ █▀▄ █▄▀${M.ENDC}\n`);
     await Shell.write(`${M.PINK}A project written by ${M.CYAN}Rosie${M.BLUE}/${M.CYAN}Acquite${M.ENDC}\n`);
