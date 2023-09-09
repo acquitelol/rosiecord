@@ -24,12 +24,12 @@ class Main extends Colors {
             : item.state === 'success'
                 ? '+'
                 : '-'
-        }${this.PINK}]${item.state === 'pending'
+            }${this.PINK}]${item.state === 'pending'
                 ? this.CYAN
                 : item.state === 'success'
                     ? this.GREEN
                     : this.RED
-        } ${item.name} ${type}`;
+            } ${item.name} ${type}`;
     }
 
     load(path: string) {
@@ -45,7 +45,7 @@ class Main extends Colors {
         return ipaArray;
     }
 
-    async logCurrentState (ipaStates: any[], type: string): Promise<void> {
+    async logCurrentState(ipaStates: any[], type: string): Promise<void> {
         const defaultStates = ipaStates.map(ipaItem => this.format(ipaItem, this.type));
         const stdout = `${this.BLUE}${type}: [${this.PINK}${defaultStates.join(`${this.CYAN}, ${this.PINK}`)}${this.BLUE}]${this.ENDC}\r`
 
@@ -85,10 +85,10 @@ class Inject extends Colors {
         const requiredPatches = (await M.get(this.getParam)).filter(item => {
             if (!this.hasClean) return true;
 
-            return process.argv[2] == "k2genmity" 
-                ? (item !== (item.includes("Development") 
-                    ? "Enmity.Development.Official.deb" 
-                    : "Enmity.deb")) 
+            return process.argv[2] == "k2genmity"
+                ? (item !== (item.includes("Development")
+                    ? "Enmity.Development.Official.deb"
+                    : "Enmity.deb"))
                 : (item !== "K2genmity.Development.deb")
         })
 
@@ -96,8 +96,8 @@ class Inject extends Colors {
         const tweakStates = requiredPatches.map(ipa => new State('pending', ipa))
         const S = new States();
 
-        await Shell.write(`${this.CYAN}Injecting ${this.PINK}${this.outputType}${this.CYAN} into ${this.PINK}Base IPAs${this.CYAN}. If ${this.hasClean?"a ":""}${this.PINK}${this.type}${this.CYAN} has been ${this.GREEN}successfully${this.CYAN} injected in all IPAs, it will look like this: ${this.BLUE}"${S.SUCCESS} ${this.hasClean?`Example `:""}${this.type}${this.BLUE}"\n`)
-        await M.logCurrentState(tweakStates, `Injected ${this.type}${this.hasClean?"s":""}`)
+        await Shell.write(`${this.CYAN}Injecting ${this.PINK}${this.outputType}${this.CYAN} into ${this.PINK}Base IPAs${this.CYAN}. If ${this.hasClean ? "a " : ""}${this.PINK}${this.type}${this.CYAN} has been ${this.GREEN}successfully${this.CYAN} injected in all IPAs, it will look like this: ${this.BLUE}"${S.SUCCESS} ${this.hasClean ? `Example ` : ""}${this.type}${this.BLUE}"\n`)
+        await M.logCurrentState(tweakStates, `Injected ${this.type}${this.hasClean ? "s" : ""}`)
 
         for (const i in requiredPatches) {
             let patched: number = 0;
@@ -108,10 +108,10 @@ class Inject extends Colors {
                 await callable(ipaName, patchName);
                 patched++;
 
-                const isComplete: boolean = patched===stdoutIpas.length;
+                const isComplete: boolean = patched === stdoutIpas.length;
 
                 // @ts-ignore
-                isComplete ? tweakStates.find(patch => patch.name===patchName).state = 'success' : null;
+                isComplete ? tweakStates.find(patch => patch.name === patchName).state = 'success' : null;
                 isComplete ? await M.logCurrentState(tweakStates, `Injected ${this.type}s`) : null;
             }
         }
@@ -148,45 +148,45 @@ const EntryPoint = async (index: number, ipaName: string) => {
 
             break;
         }
-    case 1: {
-        const M: Main = new Main('Tweak', 'Required Tweaks');
-        await M.Main(async (): Promise<void> => {
-            await new Inject("Tweak", "all Required Tweaks", true, 'ls Patches/Required').run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`Azule/azule -U -i Dist/${ipaName}.ipa -o Dist -f $PWD/Patches/Required/${patchName} -v & wait $!`)
-                await Shell.run(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}.ipa`)
+        case 1: {
+            const M: Main = new Main('Tweak', 'Required Tweaks');
+            await M.Main(async (): Promise<void> => {
+                await new Inject("Tweak", "all Required Tweaks", true, 'ls Patches/Required').run(M, async (ipaName: string, patchName: string) => {
+                    await Shell.run(`Azule/azule -U -i Dist/${ipaName}.ipa -o Dist -f $PWD/Patches/Required/${patchName} -v & wait $!`)
+                    await Shell.run(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}.ipa`)
+                })
             })
-        })
 
-        break;
-    }
-    case 2: {
-        const M: Main = new Main('Pack', 'Icon Packs');
-        await M.Main(async (): Promise<void> => {
-            await new Inject("Pack", "all Icon Packs", true, 'ls Packs').run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`unzip -qq -o Dist/${ipaName}.ipa`)
-                await Shell.runSilently(`cp -rf Packs/${patchName}/Assets.car Payload/Discord.app/`)
-                await Shell.runSilently(`cp -rf Packs/${patchName}/* Payload/Discord.app/assets/`)
-                await Shell.runSilently(`rm -f Payload/Discord.app/assets/Assets.car`)
-                await Shell.runSilently(`zip -q -r Dist/${ipaName}+${patchName}_Icons.ipa Payload`)
-                await Shell.runSilently(`rm -rf Payload`)
+            break;
+        }
+        case 2: {
+            const M: Main = new Main('Pack', 'Icon Packs');
+            await M.Main(async (): Promise<void> => {
+                await new Inject("Pack", "all Icon Packs", true, 'ls Packs').run(M, async (ipaName: string, patchName: string) => {
+                    await Shell.run(`unzip -qq -o Dist/${ipaName}.ipa`)
+                    await Shell.runSilently(`cp -rf Packs/${patchName}/Assets.car Payload/Discord.app/`)
+                    await Shell.runSilently(`cp -rf Packs/${patchName}/* Payload/Discord.app/assets/`)
+                    await Shell.runSilently(`rm -f Payload/Discord.app/assets/Assets.car`)
+                    await Shell.runSilently(`zip -q -r Dist/${ipaName}+${patchName}_Icons.ipa Payload`)
+                    await Shell.runSilently(`rm -rf Payload`)
+                })
             })
-        })
 
-        break;
-    }
-    case 3: {
-        const M: Main = new Main('Tweak', "Optional Variations");
-        await M.Main(async (): Promise<void> => {
-            await new Inject("Flowercord", 'Flowercord', false, "ls Patches/Optional").run(M, async (ipaName: string, patchName: string) => {
-                await Shell.run(`Azule/azule -U -i Dist/${ipaName}.ipa -o Dist -f $PWD/Patches/Optional/${patchName} -v & wait $!`);
-                await Shell.run(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}+Flowercord.ipa`)
+            break;
+        }
+        case 3: {
+            const M: Main = new Main('Tweak', "Optional Variations");
+            await M.Main(async (): Promise<void> => {
+                await new Inject("Flowercord", 'Flowercord', false, "ls Patches/Optional").run(M, async (ipaName: string, patchName: string) => {
+                    await Shell.run(`Azule/azule -U -i Dist/${ipaName}.ipa -o Dist -f $PWD/Patches/Optional/${patchName} -v & wait $!`);
+                    await Shell.run(`mv Dist/${ipaName}+${patchName}.ipa Dist/${ipaName}+Flowercord.ipa`)
+                })
             })
-        })
 
-        break;
-    }
-    default:
-        break
+            break;
+        }
+        default:
+            break
     }
 }
 
@@ -201,7 +201,7 @@ class Initialiser extends States {
             await Shell.write(stderr
                 ? `${this.FAILURE} An error occured while packaging ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}"${this.RED}.${this.ENDC}\n`
                 : `${this.SUCCESS} Successfully packaged ${this.PINK}"${this.CYAN}${tweakName}${this.PINK}".${this.GREEN} Moving into ${this.PINK}"${this.CYAN}./Patches/${permanentability}/${this.PINK}"${this.GREEN}...${this.ENDC}\n`)
-                errored = stderr;
+            errored = stderr;
         });
 
         if (errored) return process.chdir("../..");
@@ -242,11 +242,9 @@ const main = async (): Promise<void> => {
     const { version } = M.load('./package.json');
     const IPA_LINK = Constants.IPA_FETCH_LINK;
 
-    /*
-     Gets just the IPA Name, "Discord_158" or whatever
-     Note that this is specifically only for the Discord content delivery network links and likely won't work for any other kind of link
-     */
-    const IPA_NAME = IPA_LINK.split('/')[6].split(".")[0]
+    // Gets just the IPA Name, "Discord_158" or whatever
+    const [, IPA_VERSION] = IPA_LINK.match(/.*Discord(.*)\..*\.ipa/) as string[];
+    const IPA_NAME = `Discord${IPA_VERSION.startsWith('_') ? IPA_VERSION : `_${IPA_VERSION}`}`;
 
     await D.logDivider();
 
@@ -259,7 +257,7 @@ const main = async (): Promise<void> => {
 
     await Shell.write(`${S.PENDING}${M.CYAN} Clearing existing ${M.PINK}\"IPAs\"${M.CYAN} in ${M.PINK}\"./Dist\".${M.ENDC}\r`);
     await Shell.runSilently(`mkdir -p Dist/ & wait $!; rm -rf Dist/* & wait $!; rm -rf Payload & wait $!`, (stderr) => {
-        Shell.write( stderr
+        Shell.write(stderr
             ? `${S.FAILURE} An error occurred while clearing existing ${M.PINK}\"IPAs\" in ${M.PINK}\"./Dist\".${M.ENDC}\n`
             : `${S.SUCCESS} Successfully cleared existing ${M.PINK}\"IPAs\"${M.GREEN} in ${M.PINK}\"./Dist\".${M.ENDC}\n`
         )
@@ -268,7 +266,7 @@ const main = async (): Promise<void> => {
     await Shell.write(`${S.PENDING}${M.CYAN} Downloading ${M.PINK}\"${IPA_NAME}.ipa\"${M.CYAN} into ${M.PINK}\"./Ipas\".${M.ENDC}\r`);
     await Shell.runSilently(`mkdir Ipas; rm -rf Ipas/* & wait $!;`);
     await Shell.runSilently(`curl ${IPA_LINK} -o Ipas/${IPA_NAME}.ipa`, (stderr) => {
-        Shell.write( stderr
+        Shell.write(stderr
             ? `${S.FAILURE} An error occurred while downloading ${M.PINK}\"${IPA_NAME}.ipa\" into ${M.PINK}\"./Ipas\".${M.ENDC}\n`
             : `${S.SUCCESS} Successfully downloaded ${M.PINK}\"${IPA_NAME}.ipa\"${M.GREEN} into ${M.PINK}\"./Ipas\".${M.ENDC}\n`
         )
@@ -320,8 +318,8 @@ const main = async (): Promise<void> => {
     await Shell.runSilently(`plutil -replace CFBundleIcons -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" ${MAIN_PLIST} & wait $!`)
     await Shell.runSilently(`plutil -replace CFBundleIcons~ipad -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string><string>EnmityIcon76x76</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" ${MAIN_PLIST} & wait $!`, (stderr) => {
         Shell.write(stderr
-             ? `${S.FAILURE} An error occurred while removing Discord's ${M.PINK}\"Supported Device Limits\"${M.RED}.${M.ENDC}\n`
-             : `${S.SUCCESS} Successfully Patched ${M.PINK}\"Discord's Icons\"${M.GREEN} to ${M.PINK}\"Enmity's Icons\"${M.GREEN}.${M.ENDC}\n`
+            ? `${S.FAILURE} An error occurred while removing Discord's ${M.PINK}\"Supported Device Limits\"${M.RED}.${M.ENDC}\n`
+            : `${S.SUCCESS} Successfully Patched ${M.PINK}\"Discord's Icons\"${M.GREEN} to ${M.PINK}\"Enmity's Icons\"${M.GREEN}.${M.ENDC}\n`
         )
     })
 
@@ -343,7 +341,7 @@ const main = async (): Promise<void> => {
             )
         });
     }
-    
+
     await D.logDivider();
     await Init.PackageTweak("Flowercord", "gmake package", "Optional");
     await Init.PackageTweak("SideloadFix", "gmake package", "Required");
@@ -360,7 +358,7 @@ const main = async (): Promise<void> => {
     // await Shell.write(`${S.PENDING}${M.CYAN} Signing ${M.PINK}\"Discord\"${M.CYAN} and signing ${M.PINK}\"Frameworks\"${M.CYAN}.${M.ENDC}\r`);
     // const errors: any[] = [];
     // for (const Ipa of await M.get(`ls Dist`)) {
-        
+
     //     await Shell.run(`unzip -qq -o Dist/${Ipa}`, (stderr) => stderr && errors.push(stderr));
     //     await Shell.run(`ldid -S Payload/Discord.app/Discord`, (stderr) => stderr && errors.push(stderr))
 
@@ -380,8 +378,8 @@ const main = async (): Promise<void> => {
     // errors.length > 0 && Shell.write(errors);
 
     const END_TIME = Date.now();
-    await Shell.write(`${S.SUCCESS} Successfully built ${M.PINK}Rosiecord${M.GREEN} in ${M.CYAN}${(END_TIME-START_TIME)/1000} seconds${M.GREEN}.`)
+    await Shell.write(`${S.SUCCESS} Successfully built ${M.PINK}Rosiecord${M.GREEN} in ${M.CYAN}${(END_TIME - START_TIME) / 1000} seconds${M.GREEN}.`)
 }
 
 await main();
-export {};
+export { };

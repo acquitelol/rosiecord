@@ -17,7 +17,7 @@ class Shell {
         });
     }
 
-    static async runSilently(command: string = 'ls', after = (stderr: ExecException | null, stdout: string): void => {}): Promise<string> {
+    static async runSilently(command: string = 'ls', after = (stderr: ExecException | null, stdout: string): void => { }): Promise<string> {
         return await new Promise((resolve): void => {
             const finalCommand: string = command.includes('&')
                 ? command.split('&')[0] + '> /dev/null ' + "&" + command.split('&')[1]
@@ -65,7 +65,7 @@ class States extends Colors {
 }
 
 class Constants {
-    static IPA_FETCH_LINK = "https://cdn.discordapp.com/attachments/1015971724895989780/1143592892695326781/Discord_194.0_48278.ipa";
+    static IPA_FETCH_LINK = "https://ipa.aspy.dev/discord/testflight/Discord_195.0_49413.ipa";
 }
 
 export { Shell, Colors, Divider, States, Constants };
