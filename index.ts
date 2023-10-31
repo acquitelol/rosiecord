@@ -313,15 +313,15 @@ const main = async (): Promise<void> => {
         );
     });
 
-    await Shell.write(`${S.PENDING}${M.CYAN} Patching ${M.PINK}\"Discord's Icons\" ${M.CYAN} to ${M.PINK}\"Enmity's Icons\"${M.CYAN}.${M.ENDC}\r`);
-    await Shell.runSilently(`cp -rf Icons/* Payload/Discord.app/`)
-    await Shell.runSilently(`plutil -replace CFBundleIcons -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" ${MAIN_PLIST} & wait $!`)
-    await Shell.runSilently(`plutil -replace CFBundleIcons~ipad -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string><string>EnmityIcon76x76</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" ${MAIN_PLIST} & wait $!`, (stderr) => {
-        Shell.write(stderr
-            ? `${S.FAILURE} An error occurred while removing Discord's ${M.PINK}\"Supported Device Limits\"${M.RED}.${M.ENDC}\n`
-            : `${S.SUCCESS} Successfully Patched ${M.PINK}\"Discord's Icons\"${M.GREEN} to ${M.PINK}\"Enmity's Icons\"${M.GREEN}.${M.ENDC}\n`
-        )
-    })
+    // await Shell.write(`${S.PENDING}${M.CYAN} Patching ${M.PINK}\"Discord's Icons\" ${M.CYAN} to ${M.PINK}\"Enmity's Icons\"${M.CYAN}.${M.ENDC}\r`);
+    // await Shell.runSilently(`cp -rf Icons/* Payload/Discord.app/`)
+    // await Shell.runSilently(`plutil -replace CFBundleIcons -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" ${MAIN_PLIST} & wait $!`)
+    // await Shell.runSilently(`plutil -replace CFBundleIcons~ipad -xml "<dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconFiles</key><array><string>EnmityIcon60x60</string><string>EnmityIcon76x76</string></array><key>CFBundleIconName</key><string>EnmityIcon</string></dict></dict>" ${MAIN_PLIST} & wait $!`, (stderr) => {
+    //     Shell.write(stderr
+    //         ? `${S.FAILURE} An error occurred while removing Discord's ${M.PINK}\"Supported Device Limits\"${M.RED}.${M.ENDC}\n`
+    //         : `${S.SUCCESS} Successfully Patched ${M.PINK}\"Discord's Icons\"${M.GREEN} to ${M.PINK}\"Enmity's Icons\"${M.GREEN}.${M.ENDC}\n`
+    //     )
+    // })
 
     await Shell.write(`${S.PENDING}${M.CYAN} Enabling ${M.PINK}\"UISupportsDocumentBrowser\"${M.CYAN} and ${M.PINK}\"UIFileSharingEnabled\"${M.CYAN}.${M.ENDC}\r`);
     await Shell.run(`plutil -replace UISupportsDocumentBrowser -bool true ${MAIN_PLIST} & wait $!`)
