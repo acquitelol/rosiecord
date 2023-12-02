@@ -95,7 +95,7 @@ const EntryPoint = async (index, ipaName) => {
             const M = new Main('IPA', "Different Fonts");
             await M.Main(async () => {
                 var _a;
-                const ipaList = ['GGSans', ...await M.get('ls Fonts/woff2')];
+                const ipaList = ['GGSans', ...await M.get('ls Fonts/ttf')];
                 const ipaStates = ipaList.map(ipa => new State('pending', ipa));
                 await Shell.write(`${M.CYAN}Packaging the ${M.PINK}Base IPAs${M.CYAN}. If an ${M.PINK}IPA${M.CYAN} has been ${M.GREEN}successfully${M.CYAN} packaged, it will look like this: ${M.BLUE}"${M.PINK}[${M.CYAN}+${M.PINK}]${M.GREEN} Example IPA${M.BLUE}"\n`);
                 await M.logCurrentState(ipaStates, "Base Font IPAs");
@@ -106,7 +106,7 @@ const EntryPoint = async (index, ipaName) => {
                 await Shell.runSilently(`rm -rf Payload & wait $!`);
                 for (const Font of ipaList.filter(ipa => ipa !== 'GGSans')) {
                     await Shell.runSilently(`unzip -qq -o Dist/Rosiecord-${ipaName.split("_")[1]}_GGSans-Font.ipa`);
-                    await Shell.runSilently(`cp -rf Fonts/woff2/${Font}/* Payload/Discord.app/`);
+                    await Shell.runSilently(`cp -rf Fonts/ttf/${Font}/* Payload/Discord.app/`);
                     await Shell.runSilently(`zip -q -r Dist/Rosiecord-${ipaName.split("_")[1]}_${Font}-Font.ipa Payload & wait $!`);
                     await Shell.runSilently(`rm -rf Payload & wait $!`);
                     ((_a = ipaStates.find(ipa => ipa.name === Font)) !== null && _a !== void 0 ? _a : { state: null }).state = 'success';
