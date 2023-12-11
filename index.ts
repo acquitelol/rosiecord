@@ -252,6 +252,8 @@ const main = async (): Promise<void> => {
     await Shell.write(`${M.PINK}A project written by ${M.CYAN}Rosie${M.BLUE}/${M.CYAN}Acquite${M.ENDC}\n`)
     await Shell.write(`${M.BLUE}This patcher is on version ${M.PINK}"${M.CYAN}${version}${M.PINK}"${M.ENDC}\n`)
     await Shell.write(`${M.BLUE}Patching Discord Version ${M.PINK}"${M.CYAN}${IPA_NAME}${M.PINK}"${M.ENDC}\n`)
+    await Shell.write(`${M.BLUE}Patching Link ${M.PINK}"${M.CYAN}${IPA_LINK}${M.PINK}"${M.ENDC}\n`)
+    await Shell.write(`${S.PENDING}${M.RED} Running ${M.PINK}Legacy${M.RED} Patcher.${M.ENDC}\n`)
 
     await D.logDivider();
 
@@ -332,12 +334,12 @@ const main = async (): Promise<void> => {
         )
     });
 
-    if (process.argv[2] == "k2genmity") {
-        await Shell.write(`${S.PENDING}${M.CYAN} Modifying ${M.PINK}\"NSFaceIDUsageDescription\"${M.CYAN} and adding ${M.PINK}\"K2genmity\"${M.CYAN}.${M.ENDC}\r`);
-        await Shell.run(`plutil -replace NSFaceIDUsageDescription -string "K2genmity" ${MAIN_PLIST} & wait $!`, (stderr) => {
+    if (process.argv[2] == "custom") {
+        await Shell.write(`${S.PENDING}${M.CYAN} Setting bundle ID to ${M.PINK}\"com.rosie.rosiecord\"${M.CYAN}...${M.ENDC}\r`);
+        await Shell.run(`plutil -replace CFBundleIdentifier -string "com.rosie.rosiecord" ${MAIN_PLIST} & wait $!`, (stderr) => {
             Shell.write(stderr
-                ? `${S.FAILURE} An error occurred while modifying ${M.PINK}\"NSFaceIDUsageDescription\"${M.RED}.${M.ENDC}\n`
-                : `${S.SUCCESS} Successfully modified ${M.PINK}\"NSFaceIDUsageDescription\"${M.GREEN} and added ${M.PINK}\"K2genmity\"${M.GREEN}.${M.ENDC}\n`
+                ? `${S.FAILURE} An error occurred while settting bundle ID to ${M.PINK}\"com.rosie.rosiecord\"${M.RED}.${M.ENDC}\n`
+                : `${S.SUCCESS} Successfully set bundle ID to ${M.PINK}\"com.rosie.rosiecord\"${M.CYAN}.${M.ENDC}\n`
             )
         });
     }
