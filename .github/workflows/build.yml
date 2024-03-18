@@ -11,8 +11,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Ensure main utils are installed
-        id: core
-        run: brew install coreutils ldid
+        uses: dhinakg/procursus-action@main
+        with:
+          packages: ldid coreutils
 
       - name: Run Main Node Script to Patch Rosiecord
         id: build
