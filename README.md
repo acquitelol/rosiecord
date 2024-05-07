@@ -1,8 +1,8 @@
-# Iconpacks for [Bunny](https://github.com/pyoncord/Bunny) themes+
+# Iconpacks for [Pyoncord](https://github.com/pyoncord) themes+
 [Solar](https://www.figma.com/community/file/1166831539721848736) and (updated) Rosiecord iconsax
 ## Usage
 
-1. Install Nexx's Themes+ plugin in Bunny (should work for Enmity/Rosiecord)
+1. Install Nexx's Themes+ plugin in Pyoncord (should work for Enmity/Rosiecord)
 ```
 https://vendetta.nexpid.xyz/themes-plus
 ```
