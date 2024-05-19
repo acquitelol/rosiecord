@@ -6,11 +6,12 @@
 ```
 https://vendetta.nexpid.xyz/themes-plus
 ```
-4. Enable Themes+ plugin
-5. Go to Themes+ settings, tap on `Configuration`
-6. Choose Solar
+2. Enable Themes+ plugin
+3. Go to Themes+ settings, tap on `Configuration`
+4. Choose Solar
 
->If you want to use my updated iconsax (PR not merged in Rosiecord yet guh)
+#### (Updated) Rosiecord Iconsax 
+> (PR not merged in Rosiecord yet guh)
 
 1. Click `Custom` in themes+ configuration settings
 2. On `URL` put iconpack link
