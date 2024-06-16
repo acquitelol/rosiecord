@@ -1,5 +1,5 @@
 # Iconpacks for [Pyoncord](https://github.com/pyoncord) themes+
-[Solar](https://www.figma.com/community/file/1166831539721848736) - comes in 2 different styles: bold, bold duotone and (updated) Rosiecord iconsax
+[Solar](https://www.figma.com/community/file/1166831539721848736) - comes in 3 different styles: bold, bold duotone, broken and (updated) Rosiecord iconsax
 ## Usage
 
 1. Install Nexx's Themes+ plugin in Pyoncord (should work for Enmity/Rosiecord)
@@ -8,10 +8,15 @@ https://vendetta.nexpid.xyz/themes-plus
 ```
 2. Enable Themes+ plugin
 3. Go to Themes+ settings, tap on `Configuration`
-4. Choose Solar
+4. Choose Solar or Solar (Duotone)
+
+For Solar Broken Click "Custom" and input the URL below then hit reload (ensure the `prefix` box is empty)
+```
+https://raw.githubusercontent.com/Moodzz1/discord-iconpacks/master/Packs/Solar-Broken/
+```
 
 #### (Updated) Rosiecord Iconsax 
-> (PR not merged in Rosiecord yet guh)
+(PR not merged in Rosiecord yet guh)
 
 1. Click `Custom` in themes+ configuration settings
 2. On `URL` put iconpack link
