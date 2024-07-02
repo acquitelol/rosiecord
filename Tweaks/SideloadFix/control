@@ -1,9 +1,0 @@
-Package: sideloadfix
-Name: SideloadFix
-Version: 1.0.0
-Architecture: iphoneos-arm
-Description: Tweak to fix crashes on Discord IPA
-Maintainer: Rosie
-Author: Mafu
-Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000)
